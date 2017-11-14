@@ -77,14 +77,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         currentTime.setTextAlignment(TextAlignment.CENTER);
         currentTime.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
 
-        song = new Label("Evanecense the other side");
+        song = new Label("");
         song.setTextFill(Paint.valueOf("FFFFFF"));
-        song.setTranslateY(700);
-        song.setTranslateX(100);
-        song.setAlignment(Pos.BOTTOM_CENTER);
+        song.setTranslateY(250);
+        song.setTranslateX(5);
         song.setTextAlignment(TextAlignment.CENTER);
-        song.setPrefWidth(600);
-        song.setFont(Font.font("FangSong", FontWeight.BOLD, 35));
+        song.setPrefWidth(450);
+        song.setWrapText(true);
+        song.setFont(Font.font("FangSong", FontWeight.BOLD, 22));
 
         play = new JFXButton("Play");
         play.setTextFill(Paint.valueOf("006064"));
@@ -157,6 +157,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                         mediaPlayer.play();
 
                         slider.setMax(hit.getDuration().toSeconds());
+                        song.setText(new File(bip).getName().split(".mp3")[0]);
                         sliderClock();
                     }
                 });
