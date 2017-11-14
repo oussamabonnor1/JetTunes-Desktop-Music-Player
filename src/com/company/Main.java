@@ -7,18 +7,18 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Pane;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.io.FileInputStream;
+import java.io.File;
 
 public class Main extends Application implements EventHandler<ActionEvent> {
 
@@ -48,7 +48,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         stage.setTitle("JetReads");
         stage.setResizable(false);
 
-        Image img = new Image(new FileInputStream("C:\\Users\\Oussama\\IdeaProjects\\Music Player\\reverse artifact - Copie.PNG"));
+//        Image img = new Image(new FileInputStream("C:\\Users\\Oussama\\IdeaProjects\\Music Player\\reverse artifact - Copie.PNG"));
 
         mainlayout = new Pane();
 
@@ -142,7 +142,13 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     @Override
     public void handle(ActionEvent event) {
         if (event.getSource()==play){
-            if (play.getText()=="Play") play.setText("Pause");
+            if (play.getText()=="Play") {
+                play.setText("Pause");
+                String bip = "C://Users//oussama//Music//GoPro_HERO3_Almost_as_Epic_as_the_HERO3_.hd.mp3";
+                javafx.scene.media.Media hit = new javafx.scene.media.Media(new File(bip).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(hit);
+                mediaPlayer.play();
+            }
             else play.setText("Play");
         }
     }
