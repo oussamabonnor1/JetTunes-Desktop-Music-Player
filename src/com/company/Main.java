@@ -19,9 +19,9 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class Main extends Application implements EventHandler<ActionEvent> {
 
@@ -61,21 +61,21 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         title.setTextAlignment(TextAlignment.CENTER);
         title.setFont(Font.font("FangSong", FontWeight.BOLD, 35));
 
-        totalTime = new Label("3:54");
+        totalTime = new Label("");
         totalTime.setTextFill(Paint.valueOf("FFFFFF"));
-        totalTime.setTranslateY(350);
-        totalTime.setTranslateX(600);
+        totalTime.setTranslateY(585);
+        totalTime.setTranslateX(400);
         totalTime.setAlignment(Pos.BOTTOM_CENTER);
         totalTime.setTextAlignment(TextAlignment.CENTER);
         totalTime.setFont(Font.font("FangSong", FontWeight.BOLD, 15));
 
-        currentTime = new Label("1:54");
+        currentTime = new Label("");
         currentTime.setTextFill(Paint.valueOf("FFFFFF"));
-        currentTime.setTranslateY(350);
-        currentTime.setTranslateX(190);
+        currentTime.setTranslateY(585);
+        currentTime.setTranslateX(50);
         currentTime.setAlignment(Pos.BOTTOM_CENTER);
         currentTime.setTextAlignment(TextAlignment.CENTER);
-        currentTime.setFont(Font.font("FangSong", FontWeight.BOLD, 15));
+        currentTime.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
 
         song = new Label("Evanecense the other side");
         song.setTextFill(Paint.valueOf("FFFFFF"));
@@ -124,8 +124,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         stop.setOnAction(this);
 
         slider = new JFXSlider(0, 100, 0);
-        slider.setTranslateX(20);
-        slider.setTranslateY(300);
+        slider.setTranslateX(50);
+        slider.setTranslateY(550);
         slider.setPrefSize(350, 50);
 
 
@@ -133,7 +133,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         mainlayout.setBackground(new Background(new BackgroundFill(Paint.valueOf("006064"), null, null)));
         //mainlayout.setBackground(new Background(new BackgroundImage(img,null,null,null, null)));
 
-        scene = new Scene(mainlayout, 600, 700);
+        scene = new Scene(mainlayout, 450, 700);
 
         stage.setScene(scene);
         stage.show();
@@ -154,31 +154,30 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
                         System.out.println("Duration: " + hit.getDuration().toSeconds());
 
-                        // play if you want
                         mediaPlayer.play();
 
                         slider.setMax(hit.getDuration().toSeconds());
                         sliderClock();
                     }
                 });
-                //mediaPlayer.play();
             } else play.setText("Play");
         }
     }
 
     public void sliderClock() {
-       /* try {
-            Thread.sleep(1000);
-            slider.setValue(slider.getValue() + 1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
+
+        totalTime.setText(String.format("%02d:%02d", (int) slider.getMax()/60, (int) slider.getMax()%60));
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run() {
+            public void run()
+            {
                 javafx.application.Platform.runLater(() -> {
                     slider.setValue(slider.getValue() + 1);
+                    int seconds = (int) slider.getValue() % 60;
+                    int minutes = (int) slider.getValue() / 60;
+                    String time = String.format("%02d:%02d", minutes,seconds);
+                    currentTime.setText(time);
                 });
             }
         }, 0, 1000);
