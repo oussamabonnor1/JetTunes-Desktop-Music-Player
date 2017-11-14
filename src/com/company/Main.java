@@ -8,6 +8,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Reflection;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -19,9 +22,12 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class Main extends Application implements EventHandler<ActionEvent> {
 
@@ -39,6 +45,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     JFXButton next;
     JFXButton previous;
     JFXButton stop;
+    ImageView imageView;
 
     public static void main(String[] args) {
         // write your code here
@@ -55,15 +62,15 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         title = new Label("Current reading page");
         title.setTextFill(Paint.valueOf("FFFFFF"));
-        title.setTranslateY(100);
-        title.setTranslateX(230);
-        title.setAlignment(Pos.BOTTOM_CENTER);
+        title.setTranslateY(70);
+        title.setAlignment(Pos.CENTER);
         title.setTextAlignment(TextAlignment.CENTER);
+        title.setPrefWidth(450);
         title.setFont(Font.font("FangSong", FontWeight.BOLD, 35));
 
         totalTime = new Label("");
         totalTime.setTextFill(Paint.valueOf("FFFFFF"));
-        totalTime.setTranslateY(585);
+        totalTime.setTranslateY(520);
         totalTime.setTranslateX(400);
         totalTime.setAlignment(Pos.BOTTOM_CENTER);
         totalTime.setTextAlignment(TextAlignment.CENTER);
@@ -71,7 +78,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         currentTime = new Label("");
         currentTime.setTextFill(Paint.valueOf("FFFFFF"));
-        currentTime.setTranslateY(585);
+        currentTime.setTranslateY(520);
         currentTime.setTranslateX(50);
         currentTime.setAlignment(Pos.BOTTOM_CENTER);
         currentTime.setTextAlignment(TextAlignment.CENTER);
@@ -79,8 +86,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         song = new Label("");
         song.setTextFill(Paint.valueOf("FFFFFF"));
-        song.setTranslateY(250);
-        song.setTranslateX(5);
+        song.setTranslateY(170);
+        song.setAlignment(Pos.CENTER);
         song.setTextAlignment(TextAlignment.CENTER);
         song.setPrefWidth(450);
         song.setWrapText(true);
@@ -125,13 +132,20 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         slider = new JFXSlider(0, 100, 0);
         slider.setTranslateX(50);
-        slider.setTranslateY(550);
+        slider.setTranslateY(490);
         slider.setPrefSize(350, 50);
 
+        imageView = new ImageView();
+        imageView.setY(230);
+        imageView.setX(150);
+        imageView.setFitWidth(150);
+        imageView.setFitHeight(150);
+        Reflection reflection = new Reflection();
+        reflection.setFraction(0.35);
+        imageView.setEffect(reflection);
 
-        mainlayout.getChildren().addAll(title, play, next, previous, song, stop, slider, totalTime, currentTime);
+        mainlayout.getChildren().addAll(title, play, next, previous, song, stop, slider, totalTime, currentTime,imageView);
         mainlayout.setBackground(new Background(new BackgroundFill(Paint.valueOf("006064"), null, null)));
-        //mainlayout.setBackground(new Background(new BackgroundImage(img,null,null,null, null)));
 
         scene = new Scene(mainlayout, 450, 700);
 
@@ -144,20 +158,33 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         if (event.getSource() == play) {
             if (play.getText() == "Play") {
                 play.setText("Pause");
-                String bip = "C://Users//oussama//Music//GoPro_HERO3_Almost_as_Epic_as_the_HERO3_.hd.mp3";
+                String bip = "C://Users//oussama//Music//Sigma - Nobody To Love.mp3";
                 javafx.scene.media.Media hit = new javafx.scene.media.Media(new File(bip).toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(hit);
                 mediaPlayer.setOnReady(new Runnable() {
 
                     @Override
                     public void run() {
-
-                        System.out.println("Duration: " + hit.getDuration().toSeconds());
-
+                        System.out.println("Duration: " + hit.getMetadata().get("artist"));
+                        title.setText(""+hit.getMetadata().get("artist"));
+                        if(hit.getMetadata().get("artist").equals("null")){
+                            title.setText("Now Playing");
+                        }
                         mediaPlayer.play();
 
+                        Image img = (Image) hit.getMetadata().get("image");
+                        if(img == null){
+                            try {
+                                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
+                                imageView.setImage(img);
+                            }catch (IOException e){
+                                e.printStackTrace();
+                            }
+                        }
+
+                        imageView.setImage(img);
                         slider.setMax(hit.getDuration().toSeconds());
-                        song.setText(new File(bip).getName().split(".mp3")[0]);
+                        song.setText("" + hit.getMetadata().get("title"));
                         sliderClock();
                     }
                 });
