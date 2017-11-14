@@ -134,6 +134,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         slider.setTranslateX(50);
         slider.setTranslateY(490);
         slider.setPrefSize(350, 50);
+        slider.setMouseTransparent(true);
 
         imageView = new ImageView();
         imageView.setY(230);
