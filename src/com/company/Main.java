@@ -183,6 +183,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                         if (hit.getMetadata().get("artist") == null) {
                             title.setText("Now Playing");
                         }
+                        song.setText("" + hit.getMetadata().get("title"));
+                        if (hit.getMetadata().get("title") == null) {
+                            song.setText("Unknown Track");
+                        }
                         mediaPlayer.play();
 
                         Image img = (Image) hit.getMetadata().get("image");
@@ -191,7 +195,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                         }
 
                         slider.setMax(hit.getDuration().toSeconds());
-                        song.setText("" + hit.getMetadata().get("title"));
                         sliderClock();
                     }
                 });
