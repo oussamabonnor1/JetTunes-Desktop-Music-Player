@@ -99,8 +99,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         song.setFont(Font.font("FangSong", FontWeight.BOLD, 22));
 
         play = new JFXButton("Start");
-        play.setTextFill(Paint.valueOf("006064"));
-        play.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
+        play.setTextFill(Paint.valueOf("#0F9D58"));
+        play.setBackground(new Background(new BackgroundFill(Paint.valueOf("#FFFFFF"), null, null)));
         play.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
         play.setTranslateY(600);
         play.setTranslateX(170);
@@ -158,7 +158,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         imageView.setEffect(reflection);
 
         mainlayout.getChildren().addAll(title, play, song, slider, totalTime, currentTime, imageView);
-        mainlayout.setBackground(new Background(new BackgroundFill(Paint.valueOf("006064"), null, null)));
+        mainlayout.setBackground(new Background(new BackgroundFill(Paint.valueOf("#224687"), null, null)));
 
         scene = new Scene(mainlayout, 450, 700);
 
@@ -189,7 +189,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                         }
                         song.setText("" + hit.getMetadata().get("title"));
                         if (hit.getMetadata().get("title") == null) {
-                            song.setText("Unknown Track");
+                            song.setText(file.getName().split("mp3")[0]);
                         }
                         mediaPlayer.play();
 
