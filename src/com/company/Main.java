@@ -16,7 +16,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -51,6 +50,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     Image img;
     MediaPlayer mediaPlayer;
     Timer timer;
+    TimerTask timerTask;
 
     public static void main(String[] args) {
         // write your code here
@@ -216,10 +216,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
     public void sliderClock(boolean state) {
 
-        if(state) {
+        if (state) {
             totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
             timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
+            timerTask = new TimerTask() {
                 @Override
                 public void run() {
                     javafx.application.Platform.runLater(() -> {
@@ -230,9 +230,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                         currentTime.setText(time);
                     });
                 }
-            }, 0, 1000);
-        }else {
-
+            };
+            timer.scheduleAtFixedRate(timerTask, 0, 1000);
+        } else {
+            timerTask.cancel();
+            timer.cancel();
+            timer.purge();
         }
     }
     /* */
