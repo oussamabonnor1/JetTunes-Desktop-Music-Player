@@ -21,6 +21,7 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -167,8 +168,11 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         if (event.getSource() == play) {
             if (play.getText() == "Play") {
                 play.setText("Pause");
-                String bip = "C://Users//oussama//Music//Sigma - Nobody To Love.mp3";
-                javafx.scene.media.Media hit = new javafx.scene.media.Media(new File(bip).toURI().toString());
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open Music File");
+                File file = fileChooser.showOpenDialog(stage);
+
+                javafx.scene.media.Media hit = new javafx.scene.media.Media(file.toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(hit);
                 mediaPlayer.setOnReady(new Runnable() {
 
@@ -176,7 +180,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                     public void run() {
                         System.out.println("Duration: " + hit.getMetadata().get("artist"));
                         title.setText("" + hit.getMetadata().get("artist"));
-                        if (hit.getMetadata().get("artist").equals("null")) {
+                        if (hit.getMetadata().get("artist") == null) {
                             title.setText("Now Playing");
                         }
                         mediaPlayer.play();
