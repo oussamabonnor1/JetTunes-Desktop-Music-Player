@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
@@ -15,9 +14,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -49,6 +49,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     JFXButton stop;
     ImageView imageView;
     Image img;
+    MediaPlayer mediaPlayer;
+    Timer timer;
 
     public static void main(String[] args) {
         // write your code here
@@ -96,7 +98,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         song.setWrapText(true);
         song.setFont(Font.font("FangSong", FontWeight.BOLD, 22));
 
-        play = new JFXButton("Play");
+        play = new JFXButton("Start");
         play.setTextFill(Paint.valueOf("006064"));
         play.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
         play.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
@@ -140,9 +142,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         slider.setPrefSize(350, 50);
         slider.setMouseTransparent(true);
 
+
         try {
             img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         imageView = new ImageView(img);
@@ -166,19 +169,20 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     @Override
     public void handle(ActionEvent event) {
         if (event.getSource() == play) {
-            if (play.getText() == "Play") {
+            if (play.getText() == "Start") {
+
                 play.setText("Pause");
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Open Music File");
                 File file = fileChooser.showOpenDialog(stage);
 
                 javafx.scene.media.Media hit = new javafx.scene.media.Media(file.toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(hit);
+                mediaPlayer = new MediaPlayer(hit);
+
                 mediaPlayer.setOnReady(new Runnable() {
 
                     @Override
                     public void run() {
-                        System.out.println("Duration: " + hit.getMetadata().get("artist"));
                         title.setText("" + hit.getMetadata().get("artist"));
                         if (hit.getMetadata().get("artist") == null) {
                             title.setText("Now Playing");
@@ -195,29 +199,41 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                         }
 
                         slider.setMax(hit.getDuration().toSeconds());
-                        sliderClock();
+                        sliderClock(true);
                     }
                 });
-            } else play.setText("Play");
+            } else if (play.getText() == "Pause") {
+                play.setText("Play");
+                mediaPlayer.pause();
+                sliderClock(false);
+            } else {
+                play.setText("Pause");
+                mediaPlayer.play();
+                sliderClock(true);
+            }
         }
     }
 
-    public void sliderClock() {
+    public void sliderClock(boolean state) {
 
-        totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                javafx.application.Platform.runLater(() -> {
-                    slider.setValue(slider.getValue() + 1);
-                    int seconds = (int) slider.getValue() % 60;
-                    int minutes = (int) slider.getValue() / 60;
-                    String time = String.format("%02d:%02d", minutes, seconds);
-                    currentTime.setText(time);
-                });
-            }
-        }, 0, 1000);
+        if(state) {
+            totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    javafx.application.Platform.runLater(() -> {
+                        slider.setValue(slider.getValue() + 1);
+                        int seconds = (int) slider.getValue() % 60;
+                        int minutes = (int) slider.getValue() / 60;
+                        String time = String.format("%02d:%02d", minutes, seconds);
+                        currentTime.setText(time);
+                    });
+                }
+            }, 0, 1000);
+        }else {
+
+        }
     }
     /* */
 }
