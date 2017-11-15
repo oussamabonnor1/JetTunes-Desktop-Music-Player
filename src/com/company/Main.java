@@ -58,7 +58,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        stage.setTitle("JetReads");
+        stage.setTitle("JetTunes");
         stage.setResizable(false);
 
         mainlayout = new Pane();
