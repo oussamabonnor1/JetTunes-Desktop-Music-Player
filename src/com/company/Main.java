@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
@@ -16,6 +17,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -23,7 +25,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Timer;
@@ -46,6 +47,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     JFXButton previous;
     JFXButton stop;
     ImageView imageView;
+    Image img;
 
     public static void main(String[] args) {
         // write your code here
@@ -96,14 +98,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         play = new JFXButton("Play");
         play.setTextFill(Paint.valueOf("006064"));
         play.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        play.setFont(Font.font("FangSong", FontWeight.BOLD, 40));
-        play.setTranslateY(500);
-        play.setTranslateX(320);
-        play.setPrefWidth(170);
+        play.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
+        play.setTranslateY(600);
+        play.setTranslateX(170);
+        play.setPrefWidth(120);
         play.setOnAction(this);
 
 
-        next = new JFXButton(">");
+        /*next = new JFXButton(">");
         next.setTextFill(Paint.valueOf("006064"));
         next.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
         next.setFont(Font.font("FangSong", FontWeight.BOLD, 40));
@@ -124,11 +126,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         stop = new JFXButton("<>");
         stop.setTextFill(Paint.valueOf("006064"));
         stop.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        stop.setFont(Font.font("FangSong", FontWeight.BOLD, 40));
+        stop.setFont(Font.font("FangSong", FontWeight.BOLD, 25));
         stop.setTranslateY(600);
-        stop.setTranslateX(360);
-        stop.setMaxWidth(150);
-        stop.setOnAction(this);
+        stop.setTranslateX(200);
+        stop.setPrefSize(25,25);
+        stop.setButtonType(JFXButton.ButtonType.RAISED);
+        stop.setOnAction(this);*/
 
         slider = new JFXSlider(0, 100, 0);
         slider.setTranslateX(50);
@@ -136,7 +139,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         slider.setPrefSize(350, 50);
         slider.setMouseTransparent(true);
 
-        imageView = new ImageView();
+        try {
+            img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        imageView = new ImageView(img);
         imageView.setY(230);
         imageView.setX(150);
         imageView.setFitWidth(150);
@@ -145,7 +153,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         reflection.setFraction(0.35);
         imageView.setEffect(reflection);
 
-        mainlayout.getChildren().addAll(title, play, next, previous, song, stop, slider, totalTime, currentTime,imageView);
+        mainlayout.getChildren().addAll(title, play, song, slider, totalTime, currentTime, imageView);
         mainlayout.setBackground(new Background(new BackgroundFill(Paint.valueOf("006064"), null, null)));
 
         scene = new Scene(mainlayout, 450, 700);
@@ -167,23 +175,17 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                     @Override
                     public void run() {
                         System.out.println("Duration: " + hit.getMetadata().get("artist"));
-                        title.setText(""+hit.getMetadata().get("artist"));
-                        if(hit.getMetadata().get("artist").equals("null")){
+                        title.setText("" + hit.getMetadata().get("artist"));
+                        if (hit.getMetadata().get("artist").equals("null")) {
                             title.setText("Now Playing");
                         }
                         mediaPlayer.play();
 
                         Image img = (Image) hit.getMetadata().get("image");
-                        if(img == null){
-                            try {
-                                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
-                                imageView.setImage(img);
-                            }catch (IOException e){
-                                e.printStackTrace();
-                            }
+                        if (img != null) {
+                            imageView.setImage(img);
                         }
 
-                        imageView.setImage(img);
                         slider.setMax(hit.getDuration().toSeconds());
                         song.setText("" + hit.getMetadata().get("title"));
                         sliderClock();
@@ -195,17 +197,16 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
     public void sliderClock() {
 
-        totalTime.setText(String.format("%02d:%02d", (int) slider.getMax()/60, (int) slider.getMax()%60));
+        totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 javafx.application.Platform.runLater(() -> {
                     slider.setValue(slider.getValue() + 1);
                     int seconds = (int) slider.getValue() % 60;
                     int minutes = (int) slider.getValue() / 60;
-                    String time = String.format("%02d:%02d", minutes,seconds);
+                    String time = String.format("%02d:%02d", minutes, seconds);
                     currentTime.setText(time);
                 });
             }
