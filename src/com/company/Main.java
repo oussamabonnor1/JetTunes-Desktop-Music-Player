@@ -1,6 +1,7 @@
 package com.company;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXSlider;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -45,7 +46,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     JFXButton play;
     JFXButton next;
     JFXButton previous;
-    JFXButton stop;
+    JFXButton select;
+    JFXCheckBox mute;
     ImageView imageView;
     Image img;
     MediaPlayer mediaPlayer;
@@ -65,7 +67,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         mainlayout = new Pane();
 
-        title = new Label("Current reading page");
+        title = new Label("Choose a song to play");
         title.setTextFill(Paint.valueOf("FFFFFF"));
         title.setTranslateY(70);
         title.setAlignment(Pos.CENTER);
@@ -103,38 +105,41 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         play.setBackground(new Background(new BackgroundFill(Paint.valueOf("#FFFFFF"), null, null)));
         play.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
         play.setTranslateY(600);
-        play.setTranslateX(170);
+        play.setTranslateX(165);
         play.setPrefWidth(120);
         play.setOnAction(this);
 
+        mute = new JFXCheckBox();
+        mute.setTranslateX(80);
+        mute.setTranslateY(650);
+        mute.setText("Mute");
+        mute.setTextFill(Paint.valueOf("#FFFFFF"));
+        mute.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
+        mute.setOnAction(this);
 
-        /*next = new JFXButton(">");
-        next.setTextFill(Paint.valueOf("006064"));
+        next = new JFXButton("Next");
+        next.setTextFill(Paint.valueOf("0F9D58"));
         next.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        next.setFont(Font.font("FangSong", FontWeight.BOLD, 40));
-        next.setTranslateY(500);
-        next.setTranslateX(550);
-        next.setMaxWidth(150);
+        next.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
+        next.setTranslateY(600);
+        next.setTranslateX(300);
         next.setOnAction(this);
 
-        previous = new JFXButton("<");
-        previous.setTextFill(Paint.valueOf("006064"));
+        previous = new JFXButton("Prev");
+        previous.setTextFill(Paint.valueOf("0F9D58"));
         previous.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        previous.setFont(Font.font("FangSong", FontWeight.BOLD, 40));
-        previous.setTranslateY(500);
-        previous.setTranslateX(190);
-        previous.setMaxWidth(150);
+        previous.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
+        previous.setTranslateY(600);
+        previous.setTranslateX(90);
         previous.setOnAction(this);
 
-        stop = new JFXButton("<>");
-        stop.setTextFill(Paint.valueOf("006064"));
-        stop.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        stop.setFont(Font.font("FangSong", FontWeight.BOLD, 25));
-        stop.setTranslateY(600);
-        stop.setTranslateX(200);
-        stop.setPrefSize(25,25);
-        stop.setButtonType(JFXButton.ButtonType.RAISED);
-        stop.setOnAction(this);*/
+        select = new JFXButton("...");
+        select.setTextFill(Paint.valueOf("0F9D58"));
+        select.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
+        select.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
+        select.setTranslateY(650);
+        select.setTranslateX(205);
+        select.setOnAction(this);
 
         slider = new JFXSlider(0, 100, 0);
         slider.setTranslateX(50);
@@ -157,7 +162,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         reflection.setFraction(0.35);
         imageView.setEffect(reflection);
 
-        mainlayout.getChildren().addAll(title, play, song, slider, totalTime, currentTime, imageView);
+        timer = null;
+        mediaPlayer = null;
+
+        mainlayout.getChildren().addAll(title, play, previous, next, select, song, slider, mute, totalTime, currentTime, imageView);
         mainlayout.setBackground(new Background(new BackgroundFill(Paint.valueOf("#224687"), null, null)));
 
         scene = new Scene(mainlayout, 450, 700);
@@ -168,48 +176,57 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
     @Override
     public void handle(ActionEvent event) {
-        if (event.getSource() == play) {
-            if (play.getText() == "Start") {
 
-                play.setText("Pause");
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Open Music File");
-                File file = fileChooser.showOpenDialog(stage);
+        if (event.getSource() == select) {
+            play.setText("Pause");
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Music File");
+            File file = fileChooser.showOpenDialog(stage);
 
-                javafx.scene.media.Media hit = new javafx.scene.media.Media(file.toURI().toString());
-                mediaPlayer = new MediaPlayer(hit);
+            //stopping the previous song and its data
+            if (timer != null) {
+                sliderClock(false);
+                timer = null;
+                timerTask = null;
+            }
+            if (mediaPlayer != null) mediaPlayer.stop();
 
-                mediaPlayer.setOnReady(new Runnable() {
+            javafx.scene.media.Media hit = new javafx.scene.media.Media(file.toURI().toString());
+            mediaPlayer = new MediaPlayer(hit);
 
-                    @Override
-                    public void run() {
-                        title.setText("" + hit.getMetadata().get("artist"));
-                        if (hit.getMetadata().get("artist") == null) {
-                            title.setText("Now Playing");
-                        }
-                        song.setText("" + hit.getMetadata().get("title"));
-                        if (hit.getMetadata().get("title") == null) {
-                            song.setText(file.getName().split("mp3")[0]);
-                        }
-                        mediaPlayer.play();
+            mediaPlayer.setOnReady(new Runnable() {
 
-                        Image img = (Image) hit.getMetadata().get("image");
-                        if (img != null) {
-                            imageView.setImage(img);
-                        }
-
-                        slider.setMax(hit.getDuration().toSeconds());
-                        sliderClock(true);
+                @Override
+                public void run() {
+                    title.setText("" + hit.getMetadata().get("artist"));
+                    if (hit.getMetadata().get("artist") == null) {
+                        title.setText("Now Playing");
                     }
-                });
-            } else if (play.getText() == "Pause") {
+                    song.setText("" + hit.getMetadata().get("title"));
+                    if (hit.getMetadata().get("title") == null) {
+                        song.setText(file.getName().split("mp3")[0]);
+                    }
+                    mediaPlayer.play();
+
+                    Image img = (Image) hit.getMetadata().get("image");
+                    if (img != null) {
+                        imageView.setImage(img);
+                    }
+                    slider.setValue(0);
+                    slider.setMax(hit.getDuration().toSeconds());
+                    sliderClock(true);
+                }
+            });
+        }
+        if (event.getSource() == play) {
+            if (play.getText() == "Pause") {
                 play.setText("Play");
                 mediaPlayer.pause();
-                sliderClock(false);
+                sliderClock(true);
             } else {
                 play.setText("Pause");
                 mediaPlayer.play();
-                sliderClock(true);
+                sliderClock(false);
             }
         }
     }
