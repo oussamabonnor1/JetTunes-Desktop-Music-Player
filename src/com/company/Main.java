@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -27,34 +26,31 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main extends Application implements EventHandler<ActionEvent> {
 
-    Stage stage;
-    Scene scene;
-    Pane mainlayout;
+    private Stage stage;
 
-    Label title;
-    Label song;
-    Label totalTime;
-    Label currentTime;
+    private Label title;
+    private Label song;
+    private Label totalTime;
+    private Label currentTime;
 
-    JFXSlider slider;
-    JFXSlider volumeSlider;
-    JFXButton play;
-    JFXButton next;
-    JFXButton previous;
-    JFXButton select;
-    JFXButton volumeUp;
-    JFXButton volumeDown;
-    JFXCheckBox mute;
-    ImageView imageView;
-    Image img;
-    MediaPlayer mediaPlayer;
-    Timer timer;
-    TimerTask timerTask;
+    private JFXSlider slider;
+    private JFXSlider volumeSlider;
+    private JFXButton play;
+    private JFXButton select;
+    private JFXButton volumeUp;
+    private JFXButton volumeDown;
+    private JFXCheckBox mute;
+    private ImageView imageView;
+    private Image img;
+    private MediaPlayer mediaPlayer;
+    private Timer timer;
+    private TimerTask timerTask;
 
     public static void main(String[] args) {
         // write your code here
@@ -67,7 +63,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         stage.setTitle("JetTunes");
         stage.setResizable(false);
 
-        mainlayout = new Pane();
+        Pane mainPain = new Pane();
 
         title = new Label("Choose a song to play");
         title.setTextFill(Paint.valueOf("FFFFFF"));
@@ -119,7 +115,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         mute.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
         mute.setOnAction(this);
 
-        next = new JFXButton("Next");
+        JFXButton next = new JFXButton("Next");
         next.setTextFill(Paint.valueOf("0F9D58"));
         next.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
         next.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
@@ -127,7 +123,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         next.setTranslateX(300);
         next.setOnAction(this);
 
-        previous = new JFXButton("Prev");
+        JFXButton previous = new JFXButton("Prev");
         previous.setTextFill(Paint.valueOf("0F9D58"));
         previous.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
         previous.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
@@ -170,9 +166,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         volumeSlider.setTranslateY(620);
         volumeSlider.setPrefSize(100, 50);
         volumeSlider.setRotate(270);
-        volumeSlider.setOnMouseDragged(event -> {
-            mediaPlayer.setVolume(volumeSlider.getValue());
-        });
+        volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
 
 
         try {
@@ -192,10 +186,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         timer = null;
         mediaPlayer = null;
 
-        mainlayout.getChildren().addAll(title, play, previous,volumeSlider, next, select, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
-        mainlayout.setBackground(new Background(new BackgroundFill(Paint.valueOf("#224687"), null, null)));
+        mainPain.getChildren().addAll(title, play, previous,volumeSlider, next, select, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
+        mainPain.setBackground(new Background(new BackgroundFill(Paint.valueOf("#224687"), null, null)));
 
-        scene = new Scene(mainlayout, 450, 700);
+        Scene scene = new Scene(mainPain, 450, 700);
 
         stage.setScene(scene);
         stage.show();
@@ -221,42 +215,38 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             Media hit = new Media(file.toURI().toString());
             mediaPlayer = new MediaPlayer(hit);
 
-            mediaPlayer.setOnReady(new Runnable() {
+            mediaPlayer.setOnReady(() -> {
 
-                @Override
-                public void run() {
-
-                    //setting basic song info (artist name, title)
-                    title.setText("" + hit.getMetadata().get("artist"));
-                    if (hit.getMetadata().get("artist") == null) {
-                        title.setText("Now Playing");
-                    }
-                    song.setText("" + hit.getMetadata().get("title"));
-                    if (hit.getMetadata().get("title") == null) {
-                        song.setText(file.getName().split("mp3")[0]);
-                    }
-
-                    //choosing an album picture (if null then we provide one)
-                    Image img = (Image) hit.getMetadata().get("image");
-                    if (img != null) {
-                        imageView.setImage(img);
-                    }
-
-                    //setting up the sliders (volume and time)
-                    slider.setValue(0);
-                    slider.setMax(hit.getDuration().toSeconds());
-                    volumeSlider.setValue(mediaPlayer.getVolume());
-                    volumeSlider.setMax(mediaPlayer.getVolume());
-                    slider.setMouseTransparent(false);
-
-                    //playing the song and starting running the time slider
-                    mediaPlayer.play();
-                    sliderClock(true);
+                //setting basic song info (artist name, title)
+                title.setText("" + hit.getMetadata().get("artist"));
+                if (hit.getMetadata().get("artist") == null) {
+                    title.setText("Now Playing");
                 }
+                song.setText("" + hit.getMetadata().get("title"));
+                if (hit.getMetadata().get("title") == null) {
+                    song.setText(file.getName().split("mp3")[0]);
+                }
+
+                //choosing an album picture (if null then we provide one)
+                Image img = (Image) hit.getMetadata().get("image");
+                if (img != null) {
+                    imageView.setImage(img);
+                }
+
+                //setting up the sliders (volume and time)
+                slider.setValue(0);
+                slider.setMax(hit.getDuration().toSeconds());
+                volumeSlider.setValue(mediaPlayer.getVolume());
+                volumeSlider.setMax(mediaPlayer.getVolume());
+                slider.setMouseTransparent(false);
+
+                //playing the song and starting running the time slider
+                mediaPlayer.play();
+                sliderClock(true);
             });
         }
         if (event.getSource() == play) {
-            if (play.getText() == "Pause") {
+            if (Objects.equals(play.getText(), "Pause")) {
                 play.setText("Play");
                 mediaPlayer.pause();
                 sliderClock(false); //must not forget to stop the time slider
@@ -282,7 +272,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         }
     }
 
-    public void sliderClock(boolean state) {
+    private void sliderClock(boolean state) {
 
         if (state) {
             totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
