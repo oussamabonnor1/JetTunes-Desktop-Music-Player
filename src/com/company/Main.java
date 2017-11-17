@@ -161,14 +161,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         slider.setTranslateY(490);
         slider.setPrefSize(350, 50);
         slider.setMouseTransparent(true);
-        slider.setOnMouseDragged(event -> mediaPlayer.seek(Duration.seconds(slider.getValue())));
+        slider.setOnMouseReleased(event -> mediaPlayer.seek(Duration.seconds(slider.getValue())));
 
         volumeSlider = new JFXSlider(0, 1, 0);
         volumeSlider.setTranslateX(340);
         volumeSlider.setTranslateY(620);
         volumeSlider.setPrefSize(100, 50);
         volumeSlider.setRotate(270);
-        volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
+        volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
 
 
         try {
