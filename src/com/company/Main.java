@@ -254,11 +254,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
             Media hit = new Media(file.toURI().toString());
             mediaPlayer = new MediaPlayer(hit);
-            //setting what to do when the song is over
-            mediaPlayer.setOnEndOfMedia(() -> {
-                ++musicIndex;
-                playMusic(musicList.get(musicIndex));
-            });
 
             //this is used to delay the media player enough for the song to be loaded
             //this doesn't influence play time (milli-seconds scale)
@@ -276,18 +271,16 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             }
         }
 
-        if(event.getSource() == next){
+        if (event.getSource() == next) {
             mediaPlayer.stop();
-            sliderClock(false);
             ++musicIndex;
+            if (musicIndex > musicList.size()) musicIndex = 0;
             playMusic(musicList.get(musicIndex));
         }
-        if(event.getSource() == previous){
+        if (event.getSource() == previous) {
             mediaPlayer.pause();
-            sliderClock(false);
             --musicIndex;
-            if(musicIndex < 0) musicIndex = musicList.size() -1;
-            if(musicIndex > musicList.size()) musicIndex = 0;
+            if (musicIndex < 0) musicIndex = musicList.size() - 1;
             playMusic(musicList.get(musicIndex));
         }
 
@@ -314,23 +307,36 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         }
         song.setText("" + hit.getMetadata().get("title"));
         if (hit.getMetadata().get("title") == null) {
-            song.setText(hit.getSource().split("/")[hit.getSource().split("/").length-1]);
+            song.setText(hit.getSource().split("/")[hit.getSource().split("/").length - 1]);
         }
 
+        sliderClock(false);
         //choosing an album picture (if null then we provide one)
-        Image img = (Image) hit.getMetadata().get("image");
-        if (img != null) {
-            imageView.setImage(img);
+
+        img = (Image) hit.getMetadata().get("image");
+        if (img == null) {
+            try {
+                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        imageView.setImage(img);
 
         //setting up the sliders (volume and time)
         slider.setValue(0);
         slider.setMax(hit.getDuration().toSeconds());
         volumeSlider.setValue(mediaPlayer.getVolume());
         volumeSlider.setMax(mediaPlayer.getVolume());
+        totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
         slider.setMouseTransparent(false);
-
         mediaPlayer = new MediaPlayer(hit);
+        mediaPlayer.setOnEndOfMedia(() -> {
+            mediaPlayer.stop();
+            ++musicIndex;
+            if (musicIndex > musicList.size()) musicIndex = 0;
+            playMusic(musicList.get(musicIndex));
+        });
 
         //playing the song and starting running the time slider
         mediaPlayer.play();
@@ -356,9 +362,11 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             };
             timer.scheduleAtFixedRate(timerTask, 0, 1000);
         } else {
-            timerTask.cancel();
-            timer.cancel();
-            timer.purge();
+            if (timer != null) {
+                timerTask.cancel();
+                timer.cancel();
+                timer.purge();
+            }
         }
     }
 }
