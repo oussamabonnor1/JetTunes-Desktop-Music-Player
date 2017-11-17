@@ -5,8 +5,6 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXSlider;
 import javafx.application.Application;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -24,7 +22,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Callback;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -56,7 +54,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private MediaPlayer mediaPlayer;
     private Timer timer;
     private TimerTask timerTask;
-    private String hoveringTimeText;
 
     public static void main(String[] args) {
         // write your code here
@@ -66,14 +63,21 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        stage.setTitle("JetTunes");
+        stage.setTitle("JeTunes");
         stage.setResizable(false);
+        stage.initStyle(StageStyle.DECORATED);
+        try {
+            img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.getIcons().add(img);
 
         Pane mainPain = new Pane();
 
         title = new Label("Choose a song to play");
         title.setTextFill(Paint.valueOf("FFFFFF"));
-        title.setTranslateY(70);
+        title.setTranslateY(40);
         title.setAlignment(Pos.CENTER);
         title.setTextAlignment(TextAlignment.CENTER);
         title.setPrefWidth(450);
@@ -82,10 +86,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         totalTime = new Label("");
         totalTime.setTextFill(Paint.valueOf("FFFFFF"));
         totalTime.setTranslateY(520);
-        totalTime.setTranslateX(400);
+        totalTime.setTranslateX(350);
         totalTime.setAlignment(Pos.BOTTOM_CENTER);
         totalTime.setTextAlignment(TextAlignment.CENTER);
-        totalTime.setFont(Font.font("FangSong", FontWeight.BOLD, 15));
+        totalTime.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
 
         currentTime = new Label("");
         currentTime.setTextFill(Paint.valueOf("FFFFFF"));
@@ -97,7 +101,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         song = new Label("");
         song.setTextFill(Paint.valueOf("FFFFFF"));
-        song.setTranslateY(170);
+        song.setTranslateY(120);
         song.setAlignment(Pos.CENTER);
         song.setTextAlignment(TextAlignment.CENTER);
         song.setPrefWidth(450);
@@ -114,8 +118,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         play.setOnAction(this);
 
         mute = new JFXCheckBox();
-        mute.setTranslateX(60);
-        mute.setTranslateY(650);
+        mute.setTranslateX(90);
+        mute.setTranslateY(660);
         mute.setText("Mute");
         mute.setTextFill(Paint.valueOf("#FFFFFF"));
         mute.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
@@ -137,12 +141,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         previous.setTranslateX(90);
         previous.setOnAction(this);
 
-        select = new JFXButton("...");
+        select = new JFXButton("Open");
         select.setTextFill(Paint.valueOf("0F9D58"));
         select.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
         select.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
         select.setTranslateY(650);
-        select.setTranslateX(205);
+        select.setTranslateX(190);
         select.setOnAction(this);
 
         volumeUp = new JFXButton("+");
@@ -172,7 +176,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             int minutes = (int) slider.getValue() / 60;
             String time = String.format("%02d:%02d", minutes, seconds);
             currentTime.setText(time);
-            hoveringTimeText = time;
         });
         slider.valueFactoryProperty().setValue(param -> new StringBinding() {
             @Override
@@ -189,12 +192,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
         volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
 
-
-        try {
-            img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         imageView = new ImageView(img);
         imageView.setY(230);
         imageView.setX(150);
@@ -210,7 +207,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         mainPain.getChildren().addAll(title, play, previous,volumeSlider, next, select, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
         mainPain.setBackground(new Background(new BackgroundFill(Paint.valueOf("#224687"), null, null)));
 
-        Scene scene = new Scene(mainPain, 450, 700);
+        Scene scene = new Scene(mainPain, 450, 730);
 
         stage.setScene(scene);
         stage.show();
