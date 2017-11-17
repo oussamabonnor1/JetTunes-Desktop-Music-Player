@@ -4,6 +4,9 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXSlider;
 import javafx.application.Application;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -21,6 +24,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -52,6 +56,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private MediaPlayer mediaPlayer;
     private Timer timer;
     private TimerTask timerTask;
+    private String hoveringTimeText;
 
     public static void main(String[] args) {
         // write your code here
@@ -162,6 +167,19 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         slider.setPrefSize(350, 50);
         slider.setMouseTransparent(true);
         slider.setOnMouseReleased(event -> mediaPlayer.seek(Duration.seconds(slider.getValue())));
+        slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            int seconds = (int) slider.getValue() % 60;
+            int minutes = (int) slider.getValue() / 60;
+            String time = String.format("%02d:%02d", minutes, seconds);
+            currentTime.setText(time);
+            hoveringTimeText = time;
+        });
+        slider.valueFactoryProperty().setValue(param -> new StringBinding() {
+            @Override
+            protected String computeValue() {
+                return "*";
+            }
+        });
 
         volumeSlider = new JFXSlider(0, 1, 0);
         volumeSlider.setTranslateX(340);
@@ -169,6 +187,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         volumeSlider.setPrefSize(100, 50);
         volumeSlider.setRotate(270);
         volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
+        volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
 
 
         try {
