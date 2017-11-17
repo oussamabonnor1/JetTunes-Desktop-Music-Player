@@ -12,9 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
@@ -28,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,10 +42,13 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     Label currentTime;
 
     JFXSlider slider;
+    JFXSlider volumeSlider;
     JFXButton play;
     JFXButton next;
     JFXButton previous;
     JFXButton select;
+    JFXButton volumeUp;
+    JFXButton volumeDown;
     JFXCheckBox mute;
     ImageView imageView;
     Image img;
@@ -110,7 +112,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         play.setOnAction(this);
 
         mute = new JFXCheckBox();
-        mute.setTranslateX(80);
+        mute.setTranslateX(60);
         mute.setTranslateY(650);
         mute.setText("Mute");
         mute.setTextFill(Paint.valueOf("#FFFFFF"));
@@ -141,11 +143,33 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         select.setTranslateX(205);
         select.setOnAction(this);
 
+        volumeUp = new JFXButton("+");
+        volumeUp.setTextFill(Paint.valueOf("0F9D58"));
+        volumeUp.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
+        volumeUp.setTranslateY(650);
+        volumeUp.setTranslateX(325);
+        volumeUp.setPrefSize(40,40);
+        volumeUp.setOnAction(this);
+
+        volumeDown = new JFXButton("-");
+        volumeDown.setTextFill(Paint.valueOf("0F9D58"));
+        volumeDown.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
+        volumeDown.setTranslateY(650);
+        volumeDown.setTranslateX(275);
+        volumeDown.setPrefSize(40,40);
+        volumeDown.setOnAction(this);
+
         slider = new JFXSlider(0, 100, 0);
         slider.setTranslateX(50);
         slider.setTranslateY(490);
         slider.setPrefSize(350, 50);
         slider.setMouseTransparent(true);
+
+        volumeSlider = new JFXSlider(0, 100, 0);
+        volumeSlider.setTranslateX(340);
+        volumeSlider.setTranslateY(620);
+        volumeSlider.setPrefSize(100, 50);
+        volumeSlider.setRotate(270);
 
 
         try {
@@ -165,7 +189,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         timer = null;
         mediaPlayer = null;
 
-        mainlayout.getChildren().addAll(title, play, previous, next, select, song, slider, mute, totalTime, currentTime, imageView);
+        mainlayout.getChildren().addAll(title, play, previous,volumeSlider, next, select, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
         mainlayout.setBackground(new Background(new BackgroundFill(Paint.valueOf("#224687"), null, null)));
 
         scene = new Scene(mainlayout, 450, 700);
@@ -191,7 +215,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             }
             if (mediaPlayer != null) mediaPlayer.stop();
 
-            javafx.scene.media.Media hit = new javafx.scene.media.Media(file.toURI().toString());
+            Media hit = new Media(file.toURI().toString());
             mediaPlayer = new MediaPlayer(hit);
 
             mediaPlayer.setOnReady(new Runnable() {
@@ -214,6 +238,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                     }
                     slider.setValue(0);
                     slider.setMax(hit.getDuration().toSeconds());
+                    volumeSlider.setValue(mediaPlayer.getVolume());
+                    volumeSlider.setMax(mediaPlayer.getVolume());
                     sliderClock(true);
                 }
             });
@@ -230,8 +256,18 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             }
         }
 
-        if(event.getSource() == mute){
+        if (event.getSource() == mute) {
             mediaPlayer.setMute(!mediaPlayer.isMute());
+        }
+        if (event.getSource() == volumeUp) {
+            mediaPlayer.setVolume(mediaPlayer.getVolume() + 0.2);
+            System.out.println(mediaPlayer.getVolume());
+            volumeSlider.setValue(volumeSlider.getValue() + 0.2);
+        }
+        if (event.getSource() == volumeDown) {
+            mediaPlayer.setVolume(mediaPlayer.getVolume() - 0.2);
+            System.out.println(mediaPlayer.getVolume());
+            volumeSlider.setValue(volumeSlider.getValue() - 0.2);
         }
     }
 
