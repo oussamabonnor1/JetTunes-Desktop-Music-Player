@@ -229,6 +229,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                 sliderClock(false);
             }
         }
+
+        if(event.getSource() == mute){
+            mediaPlayer.setMute(!mediaPlayer.isMute());
+        }
     }
 
     public void sliderClock(boolean state) {
