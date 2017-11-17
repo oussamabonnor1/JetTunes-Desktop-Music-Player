@@ -21,6 +21,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -160,6 +161,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         slider.setTranslateY(490);
         slider.setPrefSize(350, 50);
         slider.setMouseTransparent(true);
+        slider.setOnMouseDragged(event -> mediaPlayer.seek(Duration.seconds(slider.getValue())));
 
         volumeSlider = new JFXSlider(0, 1, 0);
         volumeSlider.setTranslateX(340);
