@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -26,7 +27,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -165,11 +165,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         slider.setPrefSize(350, 50);
         slider.setMouseTransparent(true);
 
-        volumeSlider = new JFXSlider(0, 100, 0);
+        volumeSlider = new JFXSlider(0, 1, 0);
         volumeSlider.setTranslateX(340);
         volumeSlider.setTranslateY(620);
         volumeSlider.setPrefSize(100, 50);
         volumeSlider.setRotate(270);
+        volumeSlider.setOnMouseDragged(event -> {
+            mediaPlayer.setVolume(volumeSlider.getValue());
+        });
 
 
         try {
@@ -222,6 +225,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
                 @Override
                 public void run() {
+
+                    //setting basic song info (artist name, title)
                     title.setText("" + hit.getMetadata().get("artist"));
                     if (hit.getMetadata().get("artist") == null) {
                         title.setText("Now Playing");
@@ -230,16 +235,22 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                     if (hit.getMetadata().get("title") == null) {
                         song.setText(file.getName().split("mp3")[0]);
                     }
-                    mediaPlayer.play();
 
+                    //choosing an album picture (if null then we provide one)
                     Image img = (Image) hit.getMetadata().get("image");
                     if (img != null) {
                         imageView.setImage(img);
                     }
+
+                    //setting up the sliders (volume and time)
                     slider.setValue(0);
                     slider.setMax(hit.getDuration().toSeconds());
                     volumeSlider.setValue(mediaPlayer.getVolume());
                     volumeSlider.setMax(mediaPlayer.getVolume());
+                    slider.setMouseTransparent(false);
+
+                    //playing the song and starting running the time slider
+                    mediaPlayer.play();
                     sliderClock(true);
                 }
             });
@@ -248,23 +259,23 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             if (play.getText() == "Pause") {
                 play.setText("Play");
                 mediaPlayer.pause();
-                sliderClock(true);
+                sliderClock(false); //must not forget to stop the time slider
             } else {
                 play.setText("Pause");
                 mediaPlayer.play();
-                sliderClock(false);
+                sliderClock(true); //must not forget to start the time slider
             }
         }
 
         if (event.getSource() == mute) {
             mediaPlayer.setMute(!mediaPlayer.isMute());
         }
-        if (event.getSource() == volumeUp) {
+        if (event.getSource() == volumeUp && volumeSlider.getValue() <= 0.8) {
             mediaPlayer.setVolume(mediaPlayer.getVolume() + 0.2);
             System.out.println(mediaPlayer.getVolume());
             volumeSlider.setValue(volumeSlider.getValue() + 0.2);
         }
-        if (event.getSource() == volumeDown) {
+        if (event.getSource() == volumeDown && volumeSlider.getValue() >= 0.2) {
             mediaPlayer.setVolume(mediaPlayer.getVolume() - 0.2);
             System.out.println(mediaPlayer.getVolume());
             volumeSlider.setValue(volumeSlider.getValue() - 0.2);
@@ -295,5 +306,4 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             timer.purge();
         }
     }
-    /* */
 }
