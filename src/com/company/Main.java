@@ -1,5 +1,11 @@
 package com.company;
 
+/*
+* Created by Oussama BONNOR on 19/01/2017
+* The usage of this software is under MIT license
+* All legal ownership of this software is to JetLight studio
+* */
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXSlider;
