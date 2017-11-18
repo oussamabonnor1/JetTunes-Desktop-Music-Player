@@ -31,10 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class Main extends Application implements EventHandler<ActionEvent> {
 
@@ -56,11 +53,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private JFXCheckBox mute;
     private ImageView imageView;
     private Image img;
+    private Media hit;
     private MediaPlayer mediaPlayer;
     private Timer timer;
     private TimerTask timerTask;
 
-    private ArrayList<Media> musicList = new ArrayList<>();
+    private ArrayList<File> musicList = new ArrayList<>();
     private int musicIndex = 0;
 
     public static void main(String[] args) {
@@ -179,7 +177,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         slider.setTranslateX(50);
         slider.setTranslateY(490);
         slider.setPrefSize(350, 50);
-        slider.setMouseTransparent(true);
         //this next lambda expression is in charge of changing time of song when dragging mouse
         slider.setOnMouseReleased(event -> mediaPlayer.seek(Duration.seconds(slider.getValue())));
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -240,7 +237,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                 File parent = file.getParentFile();
                 for (int i = 0; i < parent.listFiles().length; i++) {
                     String filename = parent.listFiles()[i].toURI().toString();
-                    if (filename.endsWith("mp3")) musicList.add(new Media(filename));
+                    if (filename.endsWith(".mp3")) musicList.add(parent.listFiles()[i]);
                 }
             }
 
@@ -252,12 +249,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             }
             if (mediaPlayer != null) mediaPlayer.stop();
 
-            Media hit = new Media(file.toURI().toString());
+            //Media hit = new Media(file.toURI().toString());
+            hit = new Media(musicList.get(musicIndex).toURI().toString());
+
             mediaPlayer = new MediaPlayer(hit);
 
             //this is used to delay the media player enough for the song to be loaded
             //this doesn't influence play time (milli-seconds scale)
-            mediaPlayer.setOnReady(() -> playMusic(hit));
+            mediaPlayer.setOnReady(() -> playMusic());
         }
         if (event.getSource() == play) {
             if (Objects.equals(play.getText(), "Pause")) {
@@ -272,16 +271,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         }
 
         if (event.getSource() == next) {
-            mediaPlayer.stop();
-            ++musicIndex;
-            if (musicIndex > musicList.size()) musicIndex = 0;
-            playMusic(musicList.get(musicIndex));
+            nextSong();
         }
         if (event.getSource() == previous) {
-            mediaPlayer.pause();
-            --musicIndex;
-            if (musicIndex < 0) musicIndex = musicList.size() - 1;
-            playMusic(musicList.get(musicIndex));
+            previousSong();
         }
 
         if (event.getSource() == mute) {
@@ -289,17 +282,43 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         }
         if (event.getSource() == volumeUp && volumeSlider.getValue() <= 0.8) {
             mediaPlayer.setVolume(mediaPlayer.getVolume() + 0.2);
-            System.out.println(mediaPlayer.getVolume());
             volumeSlider.setValue(volumeSlider.getValue() + 0.2);
         }
         if (event.getSource() == volumeDown && volumeSlider.getValue() >= 0.2) {
             mediaPlayer.setVolume(mediaPlayer.getVolume() - 0.2);
-            System.out.println(mediaPlayer.getVolume());
             volumeSlider.setValue(volumeSlider.getValue() - 0.2);
         }
     }
 
-    private void playMusic(Media hit) {
+    private void nextSong() {
+        mediaPlayer.stop();
+        musicIndex = new Random().nextInt(musicList.size());
+        if (musicIndex == musicList.size()) musicIndex = 0;
+        hit = new Media(musicList.get(musicIndex).toURI().toString());
+        mediaPlayer = new MediaPlayer(hit);
+        mediaPlayer.setOnReady(() -> playMusic());
+    }
+
+    private void previousSong() {
+        mediaPlayer.stop();
+        --musicIndex;
+        if (musicIndex < 0) musicIndex = musicList.size() - 1;
+        hit = new Media(musicList.get(musicIndex).toURI().toString());
+        mediaPlayer = new MediaPlayer(hit);
+        mediaPlayer.setOnReady(() -> playMusic());
+    }
+
+    private void playMusic() {
+        //setting up the sliders (volume and time)
+        slider.setValue(0);
+        slider.setMax(hit.getDuration().toSeconds());
+        volumeSlider.setValue(mediaPlayer.getVolume());
+        volumeSlider.setMax(mediaPlayer.getVolume());
+        mediaPlayer = new MediaPlayer(hit);
+        mediaPlayer.setOnEndOfMedia(() -> {
+            nextSong();
+        });
+
         //setting basic song info (artist name, title)
         title.setText("" + hit.getMetadata().get("artist"));
         if (hit.getMetadata().get("artist") == null) {
@@ -307,12 +326,11 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         }
         song.setText("" + hit.getMetadata().get("title"));
         if (hit.getMetadata().get("title") == null) {
-            song.setText(hit.getSource().split("/")[hit.getSource().split("/").length - 1]);
+            song.setText(hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " "));
         }
 
         sliderClock(false);
         //choosing an album picture (if null then we provide one)
-
         img = (Image) hit.getMetadata().get("image");
         if (img == null) {
             try {
@@ -323,21 +341,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         }
         imageView.setImage(img);
 
-        //setting up the sliders (volume and time)
-        slider.setValue(0);
-        slider.setMax(hit.getDuration().toSeconds());
-        volumeSlider.setValue(mediaPlayer.getVolume());
-        volumeSlider.setMax(mediaPlayer.getVolume());
-        totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
-        slider.setMouseTransparent(false);
-        mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnEndOfMedia(() -> {
-            mediaPlayer.stop();
-            ++musicIndex;
-            if (musicIndex > musicList.size()) musicIndex = 0;
-            playMusic(musicList.get(musicIndex));
-        });
-
         //playing the song and starting running the time slider
         mediaPlayer.play();
         sliderClock(true);
@@ -346,6 +349,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private void sliderClock(boolean state) {
 
         if (state) {
+            slider.setValue(0);
             totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
             timer = new Timer();
             timerTask = new TimerTask() {
