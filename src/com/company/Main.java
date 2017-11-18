@@ -29,6 +29,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
@@ -232,12 +233,17 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Music File");
             File file = fileChooser.showOpenDialog(stage);
-            if (fileChooser.initialDirectoryProperty().getName().matches("initialDirectory")
-                    && file.getParentFile().isDirectory()) {
-                File parent = file.getParentFile();
-                for (int i = 0; i < parent.listFiles().length; i++) {
-                    String filename = parent.listFiles()[i].toURI().toString();
-                    if (filename.endsWith(".mp3")) musicList.add(parent.listFiles()[i]);
+            if(!loadingFile()) {
+                if (fileChooser.initialDirectoryProperty().getName().matches("initialDirectory")
+                        && file.getParentFile().isDirectory()) {
+                    File parent = file.getParentFile();
+                    for (int i = 0; i < parent.listFiles().length; i++) {
+                        String filename = parent.listFiles()[i].toURI().toString();
+                        if (filename.endsWith(".mp3")) {
+                            musicList.add(parent.listFiles()[i]);
+                            System.out.println(parent.listFiles()[i]);
+                        }
+                    }
                 }
             }
 
@@ -256,7 +262,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
             //this is used to delay the media player enough for the song to be loaded
             //this doesn't influence play time (milli-seconds scale)
-            mediaPlayer.setOnReady(() -> playMusic());
+            mediaPlayer.setOnReady(this::playMusic);
         }
         if (event.getSource() == play) {
             if (Objects.equals(play.getText(), "Pause")) {
@@ -315,9 +321,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         volumeSlider.setValue(mediaPlayer.getVolume());
         volumeSlider.setMax(mediaPlayer.getVolume());
         mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnEndOfMedia(() -> {
-            nextSong();
-        });
+        mediaPlayer.setOnEndOfMedia(() -> nextSong());
 
         //setting basic song info (artist name, title)
         title.setText("" + hit.getMetadata().get("artist"));
@@ -344,6 +348,22 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         //playing the song and starting running the time slider
         mediaPlayer.play();
         sliderClock(true);
+    }
+
+    private boolean loadingFile(){
+        File f = new File("res/MusicList");
+        Scanner scn;
+        try {
+            scn = new Scanner(f);
+            if(!scn.hasNextLine()) return false;
+
+            while (scn.hasNextLine()){
+                musicList.add(new File(scn.nextLine()));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     private void sliderClock(boolean state) {
