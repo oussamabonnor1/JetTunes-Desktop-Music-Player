@@ -221,54 +221,24 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         stage.setScene(scene);
         stage.show();
+        startJetTunes();
+    }
+
+    private void startJetTunes() {
+        if (loadingFile()) {
+            hit = new Media(musicList.get(musicIndex).toURI().toString());
+            mediaPlayer = new MediaPlayer(hit);
+            mediaPlayer.setOnReady(this::playMusic);
+        } else {
+            fillingTheList();
+        }
     }
 
     @Override
     public void handle(ActionEvent event) {
 
         if (event.getSource() == select) {
-            play.setText("Pause");
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Music File");
-            File file = fileChooser.showOpenDialog(stage);
-            if (!loadingFile()) {
-                if (fileChooser.initialDirectoryProperty().getName().matches("initialDirectory")
-                        && file.getParentFile().isDirectory()) {
-                    File parent = file.getParentFile();
-                    FileWriter fw = null;
-                    try {
-                        fw = new FileWriter(new File("res/MusicList"),true);
-                        for (int i = 0; i < parent.listFiles().length; i++) {
-                            String filename = parent.listFiles()[i].toURI().toString();
-                            if (filename.endsWith(".mp3")) {
-                                musicList.add(parent.listFiles()[i]);
-                                fw.write(parent.listFiles()[i].toString()+"\n");
-                            }
-                        }
-                        fw.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-
-                    }
-                }
-            }
-
-            //stopping the previous song and its data
-            if (timer != null) {
-                sliderClock(false);
-                timer = null;
-                timerTask = null;
-            }
-            if (mediaPlayer != null) mediaPlayer.stop();
-
-            //Media hit = new Media(file.toURI().toString());
-            hit = new Media(musicList.get(musicIndex).toURI().toString());
-
-            mediaPlayer = new MediaPlayer(hit);
-
-            //this is used to delay the media player enough for the song to be loaded
-            //this doesn't influence play time (milli-seconds scale)
-            mediaPlayer.setOnReady(this::playMusic);
+            fillingTheList();
         }
         if (event.getSource() == play)
 
@@ -314,6 +284,48 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             volumeSlider.setValue(volumeSlider.getValue() - 0.2);
         }
 
+    }
+
+    private void fillingTheList() {
+        play.setText("Pause");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Music File");
+        File file = fileChooser.showOpenDialog(stage);
+        if (fileChooser.initialDirectoryProperty().getName().matches("initialDirectory")
+                && file.getParentFile().isDirectory()) {
+            File parent = file.getParentFile();
+            FileWriter fw = null;
+            try {
+                fw = new FileWriter(new File("res/MusicList"), true);
+                for (int i = 0; i < parent.listFiles().length; i++) {
+                    String filename = parent.listFiles()[i].toURI().toString();
+                    if (filename.endsWith(".mp3")) {
+                        musicList.add(parent.listFiles()[i]);
+                        fw.write(parent.listFiles()[i].toString() + "\n");
+                    }
+                }
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
+        }
+
+        //stopping the previous song and its data
+        if (timer != null) {
+            sliderClock(false);
+            timer = null;
+            timerTask = null;
+        }
+        if (mediaPlayer != null) mediaPlayer.stop();
+
+        hit = new Media(musicList.get(musicIndex).toURI().toString());
+
+        mediaPlayer = new MediaPlayer(hit);
+
+        //this is used to delay the media player enough for the song to be loaded
+        //this doesn't influence play time (milli-seconds scale)
+        mediaPlayer.setOnReady(this::playMusic);
     }
 
     private void nextSong() {
