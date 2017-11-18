@@ -61,6 +61,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
     private ArrayList<File> musicList = new ArrayList<>();
     private int musicIndex = 0;
+    private boolean isMute;
 
     public static void main(String[] args) {
         // write your code here
@@ -284,7 +285,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         }
 
         if (event.getSource() == mute) {
-            mediaPlayer.setMute(!mediaPlayer.isMute());
+            isMute = !mediaPlayer.isMute();
+            mediaPlayer.setMute(isMute);
         }
         if (event.getSource() == volumeUp && volumeSlider.getValue() <= 0.8) {
             mediaPlayer.setVolume(mediaPlayer.getVolume() + 0.2);
@@ -303,6 +305,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         hit = new Media(musicList.get(musicIndex).toURI().toString());
         mediaPlayer = new MediaPlayer(hit);
         mediaPlayer.setOnReady(() -> playMusic());
+        mediaPlayer.setMute(isMute);
     }
 
     private void previousSong() {
@@ -347,6 +350,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         //playing the song and starting running the time slider
         mediaPlayer.play();
+        mediaPlayer.setMute(isMute);
         sliderClock(true);
     }
 
@@ -359,7 +363,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
             while (scn.hasNextLine()){
                 musicList.add(new File(scn.nextLine()));
-                System.out.println();
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
