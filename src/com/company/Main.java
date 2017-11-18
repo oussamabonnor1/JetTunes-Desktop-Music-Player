@@ -359,6 +359,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
             while (scn.hasNextLine()){
                 musicList.add(new File(scn.nextLine()));
+                System.out.println();
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
