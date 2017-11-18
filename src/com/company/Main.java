@@ -262,11 +262,9 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         }
 
         if (event.getSource() == next) {
-            changingTheme();
             nextSong();
         }
         if (event.getSource() == previous){
-            changingTheme();
             previousSong();
         }
 
@@ -334,6 +332,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     }
 
     private void nextSong() {
+        changingTheme();
         mediaPlayer.stop();
         musicIndex = new Random().nextInt(musicList.size());
         if (musicIndex == musicList.size()) musicIndex = 0;
@@ -344,6 +343,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     }
 
     private void previousSong() {
+        changingTheme();
         mediaPlayer.stop();
         --musicIndex;
         if (musicIndex < 0) musicIndex = musicList.size() - 1;
