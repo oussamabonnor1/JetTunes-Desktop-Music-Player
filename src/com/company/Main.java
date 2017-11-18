@@ -69,7 +69,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     public void start(Stage primaryStage) throws Exception {
         //setting the stage's parameters (icon, frame type, resizable..)
         stage = primaryStage;
-        stage.setTitle("JeTunes");
+        stage.setTitle("JetTunes");
         stage.setResizable(false);
         stage.initStyle(StageStyle.DECORATED);
         try {
