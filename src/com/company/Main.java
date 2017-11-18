@@ -27,10 +27,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -234,16 +231,24 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Music File");
             File file = fileChooser.showOpenDialog(stage);
-            if(!loadingFile()) {
+            if (!loadingFile()) {
                 if (fileChooser.initialDirectoryProperty().getName().matches("initialDirectory")
                         && file.getParentFile().isDirectory()) {
                     File parent = file.getParentFile();
-                    for (int i = 0; i < parent.listFiles().length; i++) {
-                        String filename = parent.listFiles()[i].toURI().toString();
-                        if (filename.endsWith(".mp3")) {
-                            musicList.add(parent.listFiles()[i]);
-                            System.out.println(parent.listFiles()[i]);
+                    FileWriter fw = null;
+                    try {
+                        fw = new FileWriter(new File("res/MusicList"),true);
+                        for (int i = 0; i < parent.listFiles().length; i++) {
+                            String filename = parent.listFiles()[i].toURI().toString();
+                            if (filename.endsWith(".mp3")) {
+                                musicList.add(parent.listFiles()[i]);
+                                fw.write(parent.listFiles()[i].toString()+"\n");
+                            }
                         }
+                        fw.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+
                     }
                 }
             }
@@ -265,7 +270,9 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             //this doesn't influence play time (milli-seconds scale)
             mediaPlayer.setOnReady(this::playMusic);
         }
-        if (event.getSource() == play) {
+        if (event.getSource() == play)
+
+        {
             if (Objects.equals(play.getText(), "Pause")) {
                 play.setText("Play");
                 mediaPlayer.pause();
@@ -277,25 +284,36 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             }
         }
 
-        if (event.getSource() == next) {
+        if (event.getSource() == next)
+
+        {
             nextSong();
         }
-        if (event.getSource() == previous) {
+        if (event.getSource() == previous)
+
+        {
             previousSong();
         }
 
-        if (event.getSource() == mute) {
+        if (event.getSource() == mute)
+
+        {
             isMute = !mediaPlayer.isMute();
             mediaPlayer.setMute(isMute);
         }
-        if (event.getSource() == volumeUp && volumeSlider.getValue() <= 0.8) {
+        if (event.getSource() == volumeUp && volumeSlider.getValue() <= 0.8)
+
+        {
             mediaPlayer.setVolume(mediaPlayer.getVolume() + 0.2);
             volumeSlider.setValue(volumeSlider.getValue() + 0.2);
         }
-        if (event.getSource() == volumeDown && volumeSlider.getValue() >= 0.2) {
+        if (event.getSource() == volumeDown && volumeSlider.getValue() >= 0.2)
+
+        {
             mediaPlayer.setVolume(mediaPlayer.getVolume() - 0.2);
             volumeSlider.setValue(volumeSlider.getValue() - 0.2);
         }
+
     }
 
     private void nextSong() {
@@ -354,14 +372,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         sliderClock(true);
     }
 
-    private boolean loadingFile(){
+    private boolean loadingFile() {
         File f = new File("res/MusicList");
         Scanner scn;
         try {
             scn = new Scanner(f);
-            if(!scn.hasNextLine()) return false;
+            if (!scn.hasNextLine()) return false;
 
-            while (scn.hasNextLine()){
+            while (scn.hasNextLine()) {
                 musicList.add(new File(scn.nextLine()));
             }
         } catch (FileNotFoundException e) {
