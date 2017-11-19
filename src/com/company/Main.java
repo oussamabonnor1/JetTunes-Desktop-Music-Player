@@ -61,6 +61,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private JFXButton goToList;
     private JFXButton goToPlayer;
     private JFXCheckBox mute;
+    private JFXCheckBox random;
     private JFXListView listView;
     private ImageView imageView;
     private Image img;
@@ -171,21 +172,13 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         select.setTranslateX(190);
         select.setOnAction(this);
 
-        goToList = new JFXButton("List");
+        goToList = new JFXButton("Open Music List");
         goToList.setTextFill(Paint.valueOf("0F9D58"));
         goToList.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
         goToList.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
         goToList.setTranslateY(700);
-        goToList.setTranslateX(190);
+        goToList.setTranslateX(150);
         goToList.setOnAction(this);
-
-        goToPlayer = new JFXButton("Player");
-        goToPlayer.setTextFill(Paint.valueOf("0F9D58"));
-        goToPlayer.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        goToPlayer.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
-        goToPlayer.setTranslateY(650);
-        goToPlayer.setTranslateX(190);
-        goToPlayer.setOnAction(this);
 
         volumeUp = new JFXButton("+");
         volumeUp.setTextFill(Paint.valueOf("0F9D58"));
@@ -236,6 +229,22 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             mediaPlayer.setMute(isMute);
         });
 
+        goToPlayer = new JFXButton("Player");
+        goToPlayer.setTextFill(Paint.valueOf("212121"));
+        goToPlayer.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
+        goToPlayer.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
+        goToPlayer.setTranslateY(650);
+        goToPlayer.setTranslateX(150);
+        goToPlayer.setOnAction(this);
+
+        random = new JFXCheckBox();
+        random.setTranslateX(250);
+        random.setTranslateY(660);
+        random.setText("Random");
+        random.setTextFill(Paint.valueOf("#FFFFFF"));
+        random.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
+        random.setOnAction(this);
+
         volumeSlider = new JFXSlider(0, 1, 0);
         volumeSlider.setTranslateX(340);
         volumeSlider.setTranslateY(620);
@@ -263,7 +272,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         scene = new Scene(mainPain, 450, 750);
 
         listPane = new Pane();
-        listPane.getChildren().addAll(listView, goToPlayer);
+        listPane.getChildren().addAll(listView, goToPlayer,random);
         listPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("212121"), null, null)));
 
         stage.setScene(scene);
@@ -331,7 +340,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         if (event.getSource() == goToPlayer) {
             changingView(false);
         }
-
+        if (event.getSource() == random){
+            isRandom = !isRandom;
+            savingParameters();
+        }
     }
 
     private void loadingParam() {
