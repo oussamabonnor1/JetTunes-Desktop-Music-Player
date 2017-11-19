@@ -8,6 +8,7 @@ package com.company;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
 import javafx.application.Application;
 import javafx.beans.binding.StringBinding;
@@ -40,7 +41,9 @@ import java.util.*;
 public class Main extends Application implements EventHandler<ActionEvent> {
 
     private Stage stage;
+    private Scene scene;
     private Pane mainPain;
+    private Pane listPane;
 
     private Label title;
     private Label song;
@@ -55,7 +58,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private JFXButton volumeDown;
     private JFXButton next;
     private JFXButton previous;
+    private JFXButton goToList;
+    private JFXButton goToPlayer;
     private JFXCheckBox mute;
+    private JFXListView listView;
     private ImageView imageView;
     private Image img;
     private Media hit;
@@ -165,6 +171,22 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         select.setTranslateX(190);
         select.setOnAction(this);
 
+        goToList = new JFXButton("List");
+        goToList.setTextFill(Paint.valueOf("0F9D58"));
+        goToList.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
+        goToList.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
+        goToList.setTranslateY(700);
+        goToList.setTranslateX(190);
+        goToList.setOnAction(this);
+
+        goToPlayer = new JFXButton("Player");
+        goToPlayer.setTextFill(Paint.valueOf("0F9D58"));
+        goToPlayer.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
+        goToPlayer.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
+        goToPlayer.setTranslateY(650);
+        goToPlayer.setTranslateX(190);
+        goToPlayer.setOnAction(this);
+
         volumeUp = new JFXButton("+");
         volumeUp.setTextFill(Paint.valueOf("0F9D58"));
         volumeUp.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
@@ -200,12 +222,16 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             }
         });
 
+        listView = new JFXListView();
+        listView.setTranslateX(150);
+        listView.setTranslateY(150);
+        listView.setBackground(new Background(new BackgroundFill(Paint.valueOf("212121"), null, null)));
+
         volumeSlider = new JFXSlider(0, 1, 0);
         volumeSlider.setTranslateX(340);
         volumeSlider.setTranslateY(620);
         volumeSlider.setPrefSize(100, 50);
         volumeSlider.setRotate(270);
-
         //these next lambda expressions are in charge of setting volume of the song
         volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
         volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
@@ -223,9 +249,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         timer = null;
         mediaPlayer = null;
 
-        mainPain.getChildren().addAll(title, play, previous, volumeSlider, next, select, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
+        mainPain.getChildren().addAll(title, play, previous, volumeSlider, next, select, goToList, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
         changingTheme();
-        Scene scene = new Scene(mainPain, 450, 730);
+        scene = new Scene(mainPain, 450, 750);
+
+        listPane = new Pane();
+        listPane.getChildren().addAll(listView, goToPlayer);
 
         stage.setScene(scene);
         stage.show();
@@ -286,6 +315,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             mediaPlayer.setVolume(mediaPlayer.getVolume() - 0.2);
             volumeSlider.setValue(volumeSlider.getValue() - 0.2);
         }
+        if (event.getSource() == goToList) {
+            changingView(true);
+        }
+        if (event.getSource() == goToPlayer) {
+            changingView(false);
+        }
 
     }
 
@@ -322,13 +357,17 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                     if (filename.endsWith(".mp3")) {
                         musicList.add(parent.listFiles()[i]);
                         fw.write(parent.listFiles()[i].toString() + "\n");
+                        //unnecessary hard coding
+                        Media hit = new Media(musicList.get(i).toURI().toString());
+                        String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
+                        listView.getItems().add(song);
                     }
                 }
                 fw.close();
             } catch (IOException e) {
                 e.printStackTrace();
-
             }
+            listView.scrollTo(0);
         }
 
         //stopping the previous song and its data
@@ -422,6 +461,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        for (int i = 0; i < musicList.size(); i++) {
+            Media hit = new Media(musicList.get(i).toURI().toString());
+            String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
+            listView.getItems().add(song);
+        }
+        listView.scrollTo(0);
         return true;
     }
 
@@ -452,16 +497,28 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         }
     }
 
-    private void savingParameters(){
+    private void savingParameters() {
 
         try {
-            FileWriter fw = new FileWriter(new File("res/Parameters"),false);
-            fw.write(""+isRandom+"\n");
-            fw.write(""+musicIndex);
+            FileWriter fw = new FileWriter(new File("res/Parameters"), false);
+            fw.write("" + isRandom + "\n");
+            fw.write("" + musicIndex);
             fw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void changingView(boolean list) {
+        if (list) {
+            scene.setRoot(listPane);
+        } else {
+            mainPain = new Pane(title, play, previous, volumeSlider, next, select, goToList, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
+            changingTheme();
+            scene.setRoot(mainPain);
+        }
+        stage.setScene(scene);
+        stage.show();
     }
 
     private void changingTheme() {
