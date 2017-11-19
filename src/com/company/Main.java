@@ -357,6 +357,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         hit = new Media(musicList.get(musicIndex).toURI().toString());
         mediaPlayer = new MediaPlayer(hit);
         mediaPlayer.setOnReady(this::playMusic);
+        try {
+            FileWriter fw = new FileWriter(new File("res/Parameters"),false);
+            fw.write(""+isRandom+"\n");
+            fw.write(""+musicIndex);
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         mediaPlayer.setMute(isMute);
     }
 

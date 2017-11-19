@@ -21,7 +21,7 @@
                      </font>
                   </Label>
                   <Label fx:id="song" contentDisplay="CENTER" layoutX="193.0" layoutY="143.0" text="Song title" textAlignment="CENTER" textFill="WHITE" />
-                  <JFXSlider fx:id="slider" layoutX="155.0" layoutY="441.0" />
+                  <JFXSlider fx:id="slider" layoutX="74.0" layoutY="441.0" prefHeight="18.0" prefWidth="300.0" />
                </children></AnchorPane>
       </content>
     </Tab>
