@@ -522,6 +522,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private void changingView(boolean list) {
         if (list) {
             scene.setRoot(listPane);
+            listView.getSelectionModel().select(musicIndex);
+            listView.scrollTo(musicIndex);
         } else {
             mainPain = new Pane(title, play, previous, volumeSlider, next, select, goToList, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
             changingTheme();
