@@ -65,10 +65,9 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
     private ArrayList<File> musicList = new ArrayList<>();
     private int musicIndex = 0;
-    private String[] colors = {"115245", "554455", "224687", "9C27B0", "42A5F5", "80D8FF", "FF9800", "9E9E9E","#212121"};
+    private String[] colors = {"115245", "554455", "224687", "9C27B0", "42A5F5", "80D8FF", "FF9800", "9E9E9E", "#212121"};
     private boolean isMute;
-    private  boolean isRandom;
-    private String currentSongTime;
+    private boolean isRandom;
 
     public static void main(String[] args) {
         // write your code here
@@ -265,7 +264,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         if (event.getSource() == next) {
             nextSong();
         }
-        if (event.getSource() == previous){
+        if (event.getSource() == previous) {
             previousSong();
         }
 
@@ -290,29 +289,25 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
     }
 
-    private void loadingParam(){
+    private void loadingParam() {
         File paramFile = new File("res/Parameters");
         Scanner sc;
-        //we start the player, then if we find params, we load them then we play
-        hit = new Media(musicList.get(musicIndex).toURI().toString());
-        mediaPlayer = new MediaPlayer(hit);
-        try{
+        try {
             sc = new Scanner(paramFile);
-            if(sc.hasNextLine()) {
+            if (sc.hasNextLine()) {
                 isRandom = Boolean.valueOf(sc.nextLine());
                 musicIndex = Integer.valueOf(sc.nextLine());
-                currentSongTime = sc.nextLine();
-                mediaPlayer.stop();
                 hit = new Media(musicList.get(musicIndex).toURI().toString());
                 mediaPlayer = new MediaPlayer(hit);
-            }else currentSongTime = "0"; //if there s no file, we start from the beginning
-        }catch (IOException e){
-        e.printStackTrace();
+                mediaPlayer.setOnReady(this::playMusic);
+            }else{
+                hit = new Media(musicList.get(musicIndex).toURI().toString());
+                mediaPlayer = new MediaPlayer(hit);
+                mediaPlayer.setOnReady(this::playMusic);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        //playing here will have either params or default
-        mediaPlayer.setOnReady(() -> playMusic(false));
-        slider.setValue(Double.valueOf(currentSongTime));
-        mediaPlayer.seek(Duration.seconds(slider.getValue()));
     }
 
     private void fillingTheList() {
@@ -323,7 +318,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         if (fileChooser.initialDirectoryProperty().getName().matches("initialDirectory")
                 && file.getParentFile().isDirectory()) {
             File parent = file.getParentFile();
-            FileWriter fw = null;
+            FileWriter fw;
             try {
                 fw = new FileWriter(new File("res/MusicList"), true);
                 for (int i = 0; i < parent.listFiles().length; i++) {
@@ -354,18 +349,18 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         //this is used to delay the media player enough for the song to be loaded
         //this doesn't influence play time (milli-seconds scale)
-        mediaPlayer.setOnReady(() -> playMusic(true));
+        mediaPlayer.setOnReady(this::playMusic);
     }
 
     private void nextSong() {
         changingTheme();
         mediaPlayer.stop();
-        if(isRandom) musicIndex = new Random().nextInt(musicList.size());
+        if (isRandom) musicIndex = new Random().nextInt(musicList.size());
         else ++musicIndex;
         if (musicIndex == musicList.size()) musicIndex = 0;
         hit = new Media(musicList.get(musicIndex).toURI().toString());
         mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnReady(() -> playMusic(true));
+        mediaPlayer.setOnReady(this::playMusic);
         mediaPlayer.setMute(isMute);
     }
 
@@ -376,17 +371,17 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         if (musicIndex < 0) musicIndex = musicList.size() - 1;
         hit = new Media(musicList.get(musicIndex).toURI().toString());
         mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnReady(() -> playMusic(true));
+        mediaPlayer.setOnReady(this::playMusic);
     }
 
-    private void playMusic(boolean rewiningSlider) {
+    private void playMusic() {
         //setting up the sliders (volume and time)
-        if(rewiningSlider) slider.setValue(0);
+        slider.setValue(0);
         slider.setMax(hit.getDuration().toSeconds());
         volumeSlider.setValue(mediaPlayer.getVolume());
         volumeSlider.setMax(mediaPlayer.getVolume());
         mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnEndOfMedia(() -> nextSong());
+        mediaPlayer.setOnEndOfMedia(this::nextSong);
 
         //setting basic song info (artist name, title)
         title.setText("" + hit.getMetadata().get("artist"));
