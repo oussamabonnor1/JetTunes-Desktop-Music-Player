@@ -223,9 +223,18 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         });
 
         listView = new JFXListView();
-        listView.setTranslateX(150);
-        listView.setTranslateY(150);
-        listView.setBackground(new Background(new BackgroundFill(Paint.valueOf("212121"), null, null)));
+        listView.setTranslateX(50);
+        listView.setTranslateY(50);
+        listView.setPrefSize(350,550);
+        listView.setOnMouseClicked(event -> {
+            mediaPlayer.stop();
+            musicIndex = listView.getSelectionModel().getSelectedIndex();
+            hit = new Media(musicList.get(musicIndex).toURI().toString());
+            mediaPlayer = new MediaPlayer(hit);
+            mediaPlayer.setOnReady(this::playMusic);
+            savingParameters();
+            mediaPlayer.setMute(isMute);
+        });
 
         volumeSlider = new JFXSlider(0, 1, 0);
         volumeSlider.setTranslateX(340);
@@ -255,6 +264,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         listPane = new Pane();
         listPane.getChildren().addAll(listView, goToPlayer);
+        listPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("212121"), null, null)));
 
         stage.setScene(scene);
         stage.show();
