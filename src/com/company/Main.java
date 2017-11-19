@@ -297,14 +297,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             if (sc.hasNextLine()) {
                 isRandom = Boolean.valueOf(sc.nextLine());
                 musicIndex = Integer.valueOf(sc.nextLine());
-                hit = new Media(musicList.get(musicIndex).toURI().toString());
-                mediaPlayer = new MediaPlayer(hit);
-                mediaPlayer.setOnReady(this::playMusic);
-            }else{
-                hit = new Media(musicList.get(musicIndex).toURI().toString());
-                mediaPlayer = new MediaPlayer(hit);
-                mediaPlayer.setOnReady(this::playMusic);
             }
+            hit = new Media(musicList.get(musicIndex).toURI().toString());
+            mediaPlayer = new MediaPlayer(hit);
+            mediaPlayer.setOnReady(this::playMusic);
         } catch (IOException e) {
             e.printStackTrace();
         }
