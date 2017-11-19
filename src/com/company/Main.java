@@ -67,6 +67,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private int musicIndex = 0;
     private String[] colors = {"115245", "554455", "224687", "9C27B0", "42A5F5", "80D8FF", "FF9800", "9E9E9E","#212121"};
     private boolean isMute;
+    private  boolean isRandom;
+    private String currentSongTime;
 
     public static void main(String[] args) {
         // write your code here
@@ -233,12 +235,11 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
     private void startJetTunes() {
         if (loadingFile()) {
-            hit = new Media(musicList.get(musicIndex).toURI().toString());
-            mediaPlayer = new MediaPlayer(hit);
-            mediaPlayer.setOnReady(this::playMusic);
+            play.setText("Pause");
         } else {
             fillingTheList();
         }
+        loadingParam();
     }
 
     @Override
@@ -289,6 +290,31 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
     }
 
+    private void loadingParam(){
+        File paramFile = new File("res/Parameters");
+        Scanner sc;
+        //we start the player, then if we find params, we load them then we play
+        hit = new Media(musicList.get(musicIndex).toURI().toString());
+        mediaPlayer = new MediaPlayer(hit);
+        try{
+            sc = new Scanner(paramFile);
+            if(sc.hasNextLine()) {
+                isRandom = Boolean.valueOf(sc.nextLine());
+                musicIndex = Integer.valueOf(sc.nextLine());
+                currentSongTime = sc.nextLine();
+                mediaPlayer.stop();
+                hit = new Media(musicList.get(musicIndex).toURI().toString());
+                mediaPlayer = new MediaPlayer(hit);
+            }else currentSongTime = "0"; //if there s no file, we start from the beginning
+        }catch (IOException e){
+        e.printStackTrace();
+        }
+        //playing here will have either params or default
+        mediaPlayer.setOnReady(() -> playMusic(false));
+        slider.setValue(Double.valueOf(currentSongTime));
+        mediaPlayer.seek(Duration.seconds(slider.getValue()));
+    }
+
     private void fillingTheList() {
         play.setText("Pause");
         FileChooser fileChooser = new FileChooser();
@@ -328,17 +354,18 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         //this is used to delay the media player enough for the song to be loaded
         //this doesn't influence play time (milli-seconds scale)
-        mediaPlayer.setOnReady(this::playMusic);
+        mediaPlayer.setOnReady(() -> playMusic(true));
     }
 
     private void nextSong() {
         changingTheme();
         mediaPlayer.stop();
-        musicIndex = new Random().nextInt(musicList.size());
+        if(isRandom) musicIndex = new Random().nextInt(musicList.size());
+        else ++musicIndex;
         if (musicIndex == musicList.size()) musicIndex = 0;
         hit = new Media(musicList.get(musicIndex).toURI().toString());
         mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnReady(() -> playMusic());
+        mediaPlayer.setOnReady(() -> playMusic(true));
         mediaPlayer.setMute(isMute);
     }
 
@@ -349,12 +376,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         if (musicIndex < 0) musicIndex = musicList.size() - 1;
         hit = new Media(musicList.get(musicIndex).toURI().toString());
         mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnReady(() -> playMusic());
+        mediaPlayer.setOnReady(() -> playMusic(true));
     }
 
-    private void playMusic() {
+    private void playMusic(boolean rewiningSlider) {
         //setting up the sliders (volume and time)
-        slider.setValue(0);
+        if(rewiningSlider) slider.setValue(0);
         slider.setMax(hit.getDuration().toSeconds());
         volumeSlider.setValue(mediaPlayer.getVolume());
         volumeSlider.setMax(mediaPlayer.getVolume());
@@ -408,7 +435,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private void sliderClock(boolean state) {
 
         if (state) {
-            slider.setValue(0);
             totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
             timer = new Timer();
             timerTask = new TimerTask() {
