@@ -1,10 +1,10 @@
 package com.company;
 
 /*
-* Created by Oussama BONNOR on 19/01/2017
-* The usage of this software is under MIT license
-* All legal ownership of this software is to JetLight studio
-* */
+ * Created by Oussama BONNOR on 19/01/2017
+ * The usage of this software is under MIT license
+ * All legal ownership of this software is to JetLight studio
+ * */
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -218,7 +218,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         listView = new JFXListView();
         listView.setTranslateX(50);
         listView.setTranslateY(50);
-        listView.setPrefSize(350,550);
+        listView.setPrefSize(350, 550);
         listView.setOnMouseClicked(event -> {
             mediaPlayer.stop();
             musicIndex = listView.getSelectionModel().getSelectedIndex();
@@ -272,7 +272,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         scene = new Scene(mainPain, 450, 750);
 
         listPane = new Pane();
-        listPane.getChildren().addAll(listView, goToPlayer,random);
+        listPane.getChildren().addAll(listView, goToPlayer, random);
         listPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("212121"), null, null)));
 
         stage.setScene(scene);
@@ -340,7 +340,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         if (event.getSource() == goToPlayer) {
             changingView(false);
         }
-        if (event.getSource() == random){
+        if (event.getSource() == random) {
             isRandom = !isRandom;
             savingParameters();
         }
@@ -355,9 +355,11 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                 isRandom = Boolean.valueOf(sc.nextLine());
                 musicIndex = Integer.valueOf(sc.nextLine());
             }
-            hit = new Media(musicList.get(musicIndex).toURI().toString());
-            mediaPlayer = new MediaPlayer(hit);
-            mediaPlayer.setOnReady(this::playMusic);
+            if (isFileExists(musicList.get(musicIndex).toURI().toString())) {
+                hit = new Media(musicList.get(musicIndex).toURI().toString());
+                mediaPlayer = new MediaPlayer(hit);
+                mediaPlayer.setOnReady(this::playMusic);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -380,7 +382,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                         musicList.add(parent.listFiles()[i]);
                         fw.write(parent.listFiles()[i].toString() + "\n");
                         //unnecessary hard coding
-                        Media hit = new Media(musicList.get(i).toURI().toString());
+                        Media hit = new Media(parent.listFiles()[i].toURI().toString());
                         String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
                         listView.getItems().add(song);
                     }
@@ -484,12 +486,18 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             e.printStackTrace();
         }
         for (int i = 0; i < musicList.size(); i++) {
-            Media hit = new Media(musicList.get(i).toURI().toString());
-            String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
-            listView.getItems().add(song);
+            if (isFileExists(musicList.get(i).toURI().toString())) {
+                Media hit = new Media(musicList.get(i).toURI().toString());
+                String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
+                listView.getItems().add(song);
+            }
         }
         listView.scrollTo(0);
         return true;
+    }
+
+    private boolean isFileExists(String url) {
+        return new File(url).exists();
     }
 
     private void sliderClock(boolean state) {
