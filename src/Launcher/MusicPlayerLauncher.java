@@ -1,0 +1,44 @@
+package Launcher;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
+
+public class MusicPlayerLauncher extends Application {
+    private Stage stage;
+
+
+    public static void main(String[] args) {
+        // write your code here
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        //setting the stage's parameters (icon, frame type, resizable..)
+        stage = primaryStage;
+        stage.setTitle("JetTunes");
+        stage.setResizable(false);
+        stage.initStyle(StageStyle.DECORATED);
+        try {
+            Image img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
+            stage.getIcons().add(img);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Parent root = FXMLLoader.load(getClass().getResource("../View/musicPlayer.fxml"));
+        Scene scene = new Scene(root);
+
+        stage.setScene(scene);
+        stage.show();
+    }
+}

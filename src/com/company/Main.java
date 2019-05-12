@@ -13,7 +13,9 @@ import com.jfoenix.controls.JFXSlider;
 import javafx.application.Application;
 import javafx.beans.binding.StringBinding;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -277,10 +279,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         stage.setScene(scene);
         stage.show();
-        startJetTunes();
     }
 
-    private void startJetTunes() {
+    @FXML
+    public void startJetTunes(Event event) {
         if (loadingFile()) {
             play.setText("Pause");
         } else {

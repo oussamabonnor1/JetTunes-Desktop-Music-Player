@@ -2,30 +2,32 @@
 
 <?import com.jfoenix.controls.JFXSlider?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720" prefWidth="720" style="-fx-background-color: #513E6D;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MusicPlayerController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640" prefWidth="640" style="-fx-background-color: #513E6D;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MusicPlayerController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints minHeight="50.0" percentHeight="7.0" prefHeight="50.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="500.0" percentHeight="78.0" prefHeight="500.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="615.0" minHeight="10.0" percentHeight="15.0" prefHeight="487.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="500.0" percentHeight="73.0" prefHeight="500.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="615.0" minHeight="10.0" percentHeight="20.0" prefHeight="487.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #513E6D;" />
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #60CC96;" GridPane.rowIndex="2">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #302F50;" />
+      <VBox alignment="CENTER" GridPane.rowIndex="1">
          <children>
-            <JFXSlider fx:id="slider" prefHeight="28.0" prefWidth="272.0" stylesheets="@Style/style.css" />
-         </children>
-      </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #343354;" GridPane.rowIndex="1">
-         <children>
+            <ImageView fitHeight="313.0" fitWidth="449.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../res/music.jpg" />
+               </image></ImageView>
               <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" text="Now Playing" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                   <font>
                       <Font name="Calibri Light" size="28.0" />
@@ -33,6 +35,20 @@
               </Label>
               <Label fx:id="song" contentDisplay="CENTER" text="Song title" textAlignment="CENTER" textFill="WHITE" />
          </children>
-      </HBox>
+      </VBox>
+      <VBox alignment="CENTER" style="-fx-background-color: #60CC96;" GridPane.rowIndex="2">
+         <children>
+            <JFXSlider prefHeight="42.0" prefWidth="314.0" stylesheets="@Style/style.css" />
+            <HBox alignment="CENTER" prefHeight="106.0" prefWidth="640.0">
+               <children>
+                  <ImageView fitHeight="75.0" fitWidth="75.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Res/playWhiteCircle.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
     </children>
 </GridPane>
