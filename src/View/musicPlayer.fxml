@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXSlider?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -21,29 +22,86 @@
         <RowConstraints maxHeight="615.0" minHeight="10.0" percentHeight="20.0" prefHeight="487.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #302F50;" />
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #302F50;">
+         <children>
+            <ImageView fitHeight="33.0" fitWidth="42.0" onMouseClicked="#closeApp" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../res/quitWhiteCircle.png" />
+               </image>
+               <HBox.margin>
+                  <Insets left="15.0" />
+               </HBox.margin>
+            </ImageView>
+         </children></HBox>
       <VBox alignment="CENTER" GridPane.rowIndex="1">
          <children>
             <ImageView fitHeight="313.0" fitWidth="449.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../res/music.jpg" />
                </image></ImageView>
-              <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" text="Now Playing" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                  <font>
-                      <Font name="Calibri Light" size="28.0" />
-                  </font>
-              </Label>
-              <Label fx:id="song" contentDisplay="CENTER" text="Song title" textAlignment="CENTER" textFill="WHITE" />
+            <Label fx:id="title1" alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="314.0" text="Song title" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font name="Calibri Bold" size="30.0" />
+               </font>
+            </Label>
          </children>
       </VBox>
       <VBox alignment="CENTER" style="-fx-background-color: #60CC96;" GridPane.rowIndex="2">
          <children>
-            <JFXSlider prefHeight="42.0" prefWidth="314.0" stylesheets="@Style/style.css" />
+            <HBox alignment="CENTER" spacing="10.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <children>
+                    <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                        <font>
+                            <Font name="Arial Bold" size="16.0" />
+                        </font>
+                    </Label>
+                  <JFXSlider prefHeight="61.0" prefWidth="454.0" stylesheets="@Style/style.css">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </JFXSlider>
+               </children>
+            </HBox>
             <HBox alignment="CENTER" prefHeight="106.0" prefWidth="640.0">
                <children>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#repeatButton" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../res/repeateWhite.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </ImageView>
+                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#previousSong" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../res/previousWhite.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets left="150.0" />
+                     </HBox.margin>
+                  </ImageView>
                   <ImageView fitHeight="75.0" fitWidth="75.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@Res/playWhiteCircle.png" />
+                        <Image url="@../../res/playWhiteCircle.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </ImageView>
+                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#nextSong" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../res/nextWhite.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets right="150.0" />
+                     </HBox.margin>
+                  </ImageView>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#randomButton" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../res/shuffleWhite.png" />
                      </image>
                   </ImageView>
                </children>

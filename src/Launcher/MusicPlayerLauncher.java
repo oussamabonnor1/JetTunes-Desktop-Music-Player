@@ -28,7 +28,7 @@ public class MusicPlayerLauncher extends Application {
         stage = primaryStage;
         stage.setTitle("JetTunes");
         stage.setResizable(false);
-        stage.initStyle(StageStyle.DECORATED);
+        stage.initStyle(StageStyle.UNDECORATED);
         try {
             Image img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
             stage.getIcons().add(img);

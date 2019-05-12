@@ -37,6 +37,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.scene.input.MouseEvent;
+
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -84,7 +85,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-    //setting the stage's parameters (icon, frame type, resizable..)
+        //setting the stage's parameters (icon, frame type, resizable..)
         //region refactoring UI
         mainPain = new Pane();
 
@@ -286,9 +287,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
             fillingTheList();
         }
 
-        if (event.getSource() == next) {
-            nextSong();
-        }
         if (event.getSource() == previous) {
             previousSong();
         }
@@ -317,14 +315,11 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         if (event.getSource() == goToPlayer) {
             changingView(false);
         }
-        if (event.getSource() == random) {
-            isRandom = !isRandom;
-            savingParameters();
-        }
     }
 
+
     @FXML
-    public void play(MouseEvent event){
+    public void play(MouseEvent event) {
         if (Objects.equals(play.getText(), "Pause")) {
             play.setText("Play");
             mediaPlayer.pause();
@@ -401,7 +396,8 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         mediaPlayer.setOnReady(this::playMusic);
     }
 
-    private void nextSong() {
+    @FXML
+    public void nextSong(MouseEvent event) {
         changingTheme();
         mediaPlayer.stop();
         if (isRandom) musicIndex = new Random().nextInt(musicList.size());
@@ -432,7 +428,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         volumeSlider.setValue(mediaPlayer.getVolume());
         volumeSlider.setMax(mediaPlayer.getVolume());
         mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnEndOfMedia(this::nextSong);
+        mediaPlayer.setOnEndOfMedia(() -> nextSong(null));
 
         //setting basic song info (artist name, title)
         title.setText("" + hit.getMetadata().get("artist"));
@@ -460,6 +456,12 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         mediaPlayer.play();
         mediaPlayer.setMute(isMute);
         sliderClock(true);
+    }
+
+    @FXML
+    public void randomButton(MouseEvent event) {
+        isRandom = !isRandom;
+        savingParameters();
     }
 
     private boolean loadingFile() {
