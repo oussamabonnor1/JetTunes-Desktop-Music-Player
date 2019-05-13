@@ -91,7 +91,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         stage.setResizable(false);
         stage.initStyle(StageStyle.DECORATED);
         try {
-            img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
+            img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/images/music.jpg")))));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -349,7 +349,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     }
 
     private void loadingParam() {
-        File paramFile = new File("res/Parameters");
+        File paramFile = new File("res/data/Parameters");
         Scanner sc;
         try {
             sc = new Scanner(paramFile);
@@ -377,7 +377,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             File parent = file.getParentFile();
             FileWriter fw;
             try {
-                fw = new FileWriter(new File("res/MusicList"), true);
+                fw = new FileWriter(new File("res/data/MusicList"), true);
                 for (int i = 0; i < parent.listFiles().length; i++) {
                     String filename = parent.listFiles()[i].toURI().toString();
                     if (filename.endsWith(".mp3")) {
@@ -461,7 +461,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         img = (Image) hit.getMetadata().get("image");
         if (img == null) {
             try {
-                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
+                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/images/music.jpg")))));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -475,7 +475,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     }
 
     private boolean loadingFile() {
-        File f = new File("res/MusicList");
+        File f = new File("res/data/MusicList");
         Scanner scn;
         try {
             scn = new Scanner(f);
@@ -532,7 +532,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     private void savingParameters() {
 
         try {
-            FileWriter fw = new FileWriter(new File("res/Parameters"), false);
+            FileWriter fw = new FileWriter(new File("res/data/Parameters"), false);
             fw.write("" + isRandom + "\n");
             fw.write("" + musicIndex);
             fw.close();

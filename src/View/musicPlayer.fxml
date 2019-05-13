@@ -26,7 +26,7 @@
          <children>
             <ImageView fitHeight="33.0" fitWidth="42.0" onMouseClicked="#closeApp" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../res/quitWhiteCircle.png" />
+                  <Image url="@../res/images/quitWhiteCircle.png" />
                </image>
                <HBox.margin>
                   <Insets left="15.0" />
@@ -37,7 +37,7 @@
          <children>
             <ImageView fitHeight="313.0" fitWidth="449.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../res/music.jpg" />
+                  <Image url="@../res/images/music.jpg" />
                </image></ImageView>
             <Label fx:id="title1" alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="314.0" text="Song title" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <font>
@@ -63,13 +63,18 @@
                         <Insets />
                      </HBox.margin>
                   </JFXSlider>
+                  <Label fx:id="title2" alignment="CENTER" contentDisplay="CENTER" text="xx:xx" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Arial Bold" size="16.0" />
+                     </font>
+                  </Label>
                </children>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="106.0" prefWidth="640.0">
+            <HBox alignment="CENTER" prefHeight="68.0" prefWidth="640.0">
                <children>
                   <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#repeatButton" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../res/repeateWhite.png" />
+                        <Image url="@../res/images/repeateWhite.png" />
                      </image>
                      <HBox.margin>
                         <Insets />
@@ -77,15 +82,15 @@
                   </ImageView>
                   <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#previousSong" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../res/previousWhite.png" />
+                        <Image url="@../res/images/previousWhite.png" />
                      </image>
                      <HBox.margin>
                         <Insets left="150.0" />
                      </HBox.margin>
                   </ImageView>
-                  <ImageView fitHeight="75.0" fitWidth="75.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="playButton" fitHeight="75.0" fitWidth="75.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../res/playWhiteCircle.png" />
+                        <Image url="@../res/images/playWhiteCircle.png" />
                      </image>
                      <HBox.margin>
                         <Insets />
@@ -93,7 +98,7 @@
                   </ImageView>
                   <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#nextSong" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../res/nextWhite.png" />
+                        <Image url="@../res/images/nextWhite.png" />
                      </image>
                      <HBox.margin>
                         <Insets right="150.0" />
@@ -101,7 +106,7 @@
                   </ImageView>
                   <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#randomButton" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../res/shuffleWhite.png" />
+                        <Image url="@../res/images/shuffleWhite.png" />
                      </image>
                   </ImageView>
                </children>

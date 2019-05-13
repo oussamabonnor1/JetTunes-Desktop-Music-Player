@@ -10,17 +10,12 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
-import javafx.application.Application;
-import javafx.beans.binding.StringBinding;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -29,16 +24,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import javafx.scene.input.MouseEvent;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
@@ -59,7 +50,8 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
     private JFXSlider slider;
     private JFXSlider volumeSlider;
-    private JFXButton play;
+    @FXML
+    private ImageView playButton;
     private JFXButton select;
     private JFXButton volumeUp;
     private JFXButton volumeDown;
@@ -81,22 +73,14 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     private int musicIndex = 0;
     private String[] colors = {"115245", "554455", "224687", "9C27B0", "42A5F5", "80D8FF", "FF9800", "9E9E9E", "#212121"};
     private boolean isMute;
+    private boolean isPlaying;
     private boolean isRandom;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //setting the stage's parameters (icon, frame type, resizable..)
         //region refactoring UI
-        mainPain = new Pane();
-
-        //setting the GUI components's parameters and attributes (java only)
-        title = new Label("Choose a song to play");
-        title.setTextFill(Paint.valueOf("FFFFFF"));
-        title.setTranslateY(40);
-        title.setAlignment(Pos.CENTER);
-        title.setTextAlignment(TextAlignment.CENTER);
-        title.setPrefWidth(450);
-        title.setFont(Font.font("FangSong", FontWeight.BOLD, 35));
+       /* mainPain = new Pane();
 
         totalTime = new Label("");
         totalTime.setTextFill(Paint.valueOf("FFFFFF"));
@@ -259,21 +243,16 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         timer = null;
         mediaPlayer = null;
 
-        mainPain.getChildren().addAll(title, play, previous, volumeSlider, next, select, goToList, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
-        changingTheme();
-        scene = new Scene(mainPain, 450, 750);
-
-        listPane = new Pane();
-        listPane.getChildren().addAll(listView, goToPlayer, random);
-        listPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("212121"), null, null)));
         //endregion
+        */
         startJetTunes();
+
     }
 
     @FXML
     void startJetTunes() {
         if (loadingFile()) {
-            play.setText("Pause");
+            playButton.setImage(getUiImage("pauseWhite"));
         } else {
             fillingTheList();
         }
@@ -317,22 +296,123 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         }
     }
 
-
     @FXML
     public void play(MouseEvent event) {
-        if (Objects.equals(play.getText(), "Pause")) {
-            play.setText("Play");
+        if (!isPlaying) {
+            playButton.setImage(getUiImage("playWhiteCircle"));
             mediaPlayer.pause();
             sliderClock(false); //must not forget to stop the time slider
         } else {
-            play.setText("Pause");
+            playButton.setImage(getUiImage("pauseWhite"));
             mediaPlayer.play();
             sliderClock(true); //must not forget to start the time slider
         }
     }
 
+    @FXML
+    public void nextSong(MouseEvent event) {
+        changingTheme();
+        mediaPlayer.stop();
+        if (isRandom) musicIndex = new Random().nextInt(musicList.size());
+        else ++musicIndex;
+        if (musicIndex == musicList.size()) musicIndex = 0;
+        hit = new Media(musicList.get(musicIndex).toURI().toString());
+        mediaPlayer = new MediaPlayer(hit);
+        mediaPlayer.setOnReady(this::playMusic);
+        savingParameters();
+        mediaPlayer.setMute(isMute);
+    }
+
+    @FXML
+    private void previousSong() {
+        changingTheme();
+        mediaPlayer.stop();
+        --musicIndex;
+        if (musicIndex < 0) musicIndex = musicList.size() - 1;
+        hit = new Media(musicList.get(musicIndex).toURI().toString());
+        mediaPlayer = new MediaPlayer(hit);
+        savingParameters();
+        mediaPlayer.setOnReady(this::playMusic);
+    }
+
+    @FXML
+    public void randomButton(MouseEvent event) {
+        isRandom = !isRandom;
+        savingParameters();
+    }
+
+    @FXML
+    public void repeatButton(MouseEvent event) {
+
+    }
+
+    @FXML
+    public void closeApp(MouseEvent event) {
+
+    }
+
+
+    private void changingView(boolean list) {
+        if (list) {
+            scene.setRoot(listPane);
+            listView.getSelectionModel().select(musicIndex);
+            listView.scrollTo(musicIndex);
+        } else {
+            //mainPain = new Pane(title, previous, volumeSlider, next, select, goToList, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
+            changingTheme();
+            scene.setRoot(mainPain);
+        }
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    //region music functions
+    private void changingTheme() {
+        int random = new Random().nextInt(colors.length);
+        mainPain.setBackground(new Background(new BackgroundFill(Paint.valueOf(colors[random]), null, null)));
+    }
+
+    Image getUiImage(String name) {
+        return new Image("res/images/" + name + ".png");
+    }
+
+    private void savingParameters() {
+        try {
+            FileWriter fw = new FileWriter(new File("res/data/Parameters"), false);
+            fw.write("" + isRandom + "\n");
+            fw.write("" + musicIndex);
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean loadingFile() {
+
+        File f = new File("C:\\Users\\oussama\\IdeaProjects\\Music_Player_material_design_javaFX\\src\\res\\data\\MusicList");
+        Scanner scn;
+        try {
+            scn = new Scanner(f);
+            if (!scn.hasNextLine()) return false;
+
+            while (scn.hasNextLine()) {
+                musicList.add(new File(scn.nextLine()));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < musicList.size(); i++) {
+            if (isFileExists(musicList.get(i).toURI().toString())) {
+                Media hit = new Media(musicList.get(i).toURI().toString());
+                String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
+                //listView.getItems().add(song);
+            }
+        }
+        return true;
+    }
+
     private void loadingParam() {
-        File paramFile = new File("res/Parameters");
+        File paramFile = new File("C:\\Users\\oussama\\IdeaProjects\\Music_Player_material_design_javaFX\\src\\res\\data\\Parameters");
         Scanner sc;
         try {
             sc = new Scanner(paramFile);
@@ -351,7 +431,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     }
 
     private void fillingTheList() {
-        play.setText("Pause");
+        playButton.setImage(getUiImage("pauseWhite"));
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Music File");
         File file = fileChooser.showOpenDialog(stage);
@@ -360,7 +440,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
             File parent = file.getParentFile();
             FileWriter fw;
             try {
-                fw = new FileWriter(new File("res/MusicList"), true);
+                fw = new FileWriter(new File("res/data/MusicList"), true);
                 for (int i = 0; i < parent.listFiles().length; i++) {
                     String filename = parent.listFiles()[i].toURI().toString();
                     if (filename.endsWith(".mp3")) {
@@ -396,31 +476,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         mediaPlayer.setOnReady(this::playMusic);
     }
 
-    @FXML
-    public void nextSong(MouseEvent event) {
-        changingTheme();
-        mediaPlayer.stop();
-        if (isRandom) musicIndex = new Random().nextInt(musicList.size());
-        else ++musicIndex;
-        if (musicIndex == musicList.size()) musicIndex = 0;
-        hit = new Media(musicList.get(musicIndex).toURI().toString());
-        mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnReady(this::playMusic);
-        savingParameters();
-        mediaPlayer.setMute(isMute);
-    }
-
-    private void previousSong() {
-        changingTheme();
-        mediaPlayer.stop();
-        --musicIndex;
-        if (musicIndex < 0) musicIndex = musicList.size() - 1;
-        hit = new Media(musicList.get(musicIndex).toURI().toString());
-        mediaPlayer = new MediaPlayer(hit);
-        savingParameters();
-        mediaPlayer.setOnReady(this::playMusic);
-    }
-
     private void playMusic() {
         //setting up the sliders (volume and time)
         slider.setValue(0);
@@ -445,7 +500,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         img = (Image) hit.getMetadata().get("image");
         if (img == null) {
             try {
-                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/music.jpg")))));
+                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/images/music.jpg")))));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -456,36 +511,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         mediaPlayer.play();
         mediaPlayer.setMute(isMute);
         sliderClock(true);
-    }
-
-    @FXML
-    public void randomButton(MouseEvent event) {
-        isRandom = !isRandom;
-        savingParameters();
-    }
-
-    private boolean loadingFile() {
-        File f = new File("res/MusicList");
-        Scanner scn;
-        try {
-            scn = new Scanner(f);
-            if (!scn.hasNextLine()) return false;
-
-            while (scn.hasNextLine()) {
-                musicList.add(new File(scn.nextLine()));
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        for (int i = 0; i < musicList.size(); i++) {
-            if (isFileExists(musicList.get(i).toURI().toString())) {
-                Media hit = new Media(musicList.get(i).toURI().toString());
-                String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
-                listView.getItems().add(song);
-            }
-        }
-        listView.scrollTo(0);
-        return true;
     }
 
     private boolean isFileExists(String url) {
@@ -518,36 +543,5 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
             }
         }
     }
-
-    private void savingParameters() {
-
-        try {
-            FileWriter fw = new FileWriter(new File("res/Parameters"), false);
-            fw.write("" + isRandom + "\n");
-            fw.write("" + musicIndex);
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void changingView(boolean list) {
-        if (list) {
-            scene.setRoot(listPane);
-            listView.getSelectionModel().select(musicIndex);
-            listView.scrollTo(musicIndex);
-        } else {
-            mainPain = new Pane(title, play, previous, volumeSlider, next, select, goToList, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
-            changingTheme();
-            scene.setRoot(mainPain);
-        }
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    private void changingTheme() {
-        int random = new Random().nextInt(colors.length);
-        mainPain.setBackground(new Background(new BackgroundFill(Paint.valueOf(colors[random]), null, null)));
-    }
-
+    //endregion
 }
