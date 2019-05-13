@@ -35,13 +35,18 @@
          </children></HBox>
       <VBox alignment="CENTER" GridPane.rowIndex="1">
          <children>
-            <ImageView fitHeight="313.0" fitWidth="449.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="albumImage" fitHeight="313.0" fitWidth="449.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../res/images/music.jpg" />
                </image></ImageView>
-            <Label fx:id="title1" alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="314.0" text="Song title" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+            <Label fx:id="songTitle" alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="314.0" text="Song title" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <font>
                   <Font name="Calibri Bold" size="30.0" />
+               </font>
+            </Label>
+            <Label fx:id="songArtist" alignment="CENTER" contentDisplay="CENTER" prefHeight="20.0" prefWidth="138.0" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font name="Arial Bold" size="16.0" />
                </font>
             </Label>
          </children>
@@ -53,17 +58,17 @@
                   <Insets />
                </VBox.margin>
                <children>
-                    <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                    <Label fx:id="currentTime" alignment="CENTER" contentDisplay="CENTER" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                         <font>
                             <Font name="Arial Bold" size="16.0" />
                         </font>
                     </Label>
-                  <JFXSlider prefHeight="61.0" prefWidth="454.0" stylesheets="@Style/style.css">
+                  <JFXSlider fx:id="slider" prefHeight="61.0" prefWidth="454.0" stylesheets="@Style/style.css">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </JFXSlider>
-                  <Label fx:id="title2" alignment="CENTER" contentDisplay="CENTER" text="xx:xx" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label fx:id="totalTime" alignment="CENTER" contentDisplay="CENTER" text="xx:xx" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Arial Bold" size="16.0" />
                      </font>

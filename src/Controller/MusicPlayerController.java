@@ -29,7 +29,6 @@ import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
@@ -42,12 +41,15 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     private Pane listPane;
 
     @FXML
-    private Label title;
+    private Label songArtist;
     @FXML
-    private Label song;
+    private Label songTitle;
+    @FXML
     private Label totalTime;
+    @FXML
     private Label currentTime;
 
+    @FXML
     private JFXSlider slider;
     private JFXSlider volumeSlider;
     @FXML
@@ -62,7 +64,8 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     private JFXCheckBox mute;
     private JFXCheckBox random;
     private JFXListView listView;
-    private ImageView imageView;
+    @FXML
+    private ImageView albumImage;
     private Image img;
     private Media hit;
     private MediaPlayer mediaPlayer;
@@ -98,14 +101,14 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         currentTime.setTextAlignment(TextAlignment.CENTER);
         currentTime.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
 
-        song = new Label("");
-        song.setTextFill(Paint.valueOf("FFFFFF"));
-        song.setTranslateY(120);
-        song.setAlignment(Pos.CENTER);
-        song.setTextAlignment(TextAlignment.CENTER);
-        song.setPrefWidth(450);
-        song.setWrapText(true);
-        song.setFont(Font.font("FangSong", FontWeight.BOLD, 22));
+        songTitle = new Label("");
+        songTitle.setTextFill(Paint.valueOf("FFFFFF"));
+        songTitle.setTranslateY(120);
+        songTitle.setAlignment(Pos.CENTER);
+        songTitle.setTextAlignment(TextAlignment.CENTER);
+        songTitle.setPrefWidth(450);
+        songTitle.setWrapText(true);
+        songTitle.setFont(Font.font("FangSong", FontWeight.BOLD, 22));
 
         play = new JFXButton("Start");
         play.setTextFill(Paint.valueOf("#0F9D58"));
@@ -176,7 +179,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         slider.setTranslateX(50);
         slider.setTranslateY(490);
         slider.setPrefSize(350, 50);
-        //this next lambda expression is in charge of changing time of song when dragging mouse
+        //this next lambda expression is in charge of changing time of songTitle when dragging mouse
         slider.setOnMouseReleased(event -> mediaPlayer.seek(Duration.seconds(slider.getValue())));
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             int seconds = (int) slider.getValue() % 60;
@@ -226,19 +229,19 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         volumeSlider.setTranslateY(620);
         volumeSlider.setPrefSize(100, 50);
         volumeSlider.setRotate(270);
-        //these next lambda expressions are in charge of setting volume of the song
+        //these next lambda expressions are in charge of setting volume of the songTitle
         volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
         volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
 
         //setting the image view to a default picture assigned by us
-        imageView = new ImageView(img);
-        imageView.setY(230);
-        imageView.setX(150);
-        imageView.setFitWidth(150);
-        imageView.setFitHeight(150);
+        albumImage = new ImageView(img);
+        albumImage.setY(230);
+        albumImage.setX(150);
+        albumImage.setFitWidth(150);
+        albumImage.setFitHeight(150);
         Reflection reflection = new Reflection();
         reflection.setFraction(0.35);
-        imageView.setEffect(reflection);
+        albumImage.setEffect(reflection);
 
         timer = null;
         mediaPlayer = null;
@@ -307,6 +310,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
             mediaPlayer.play();
             sliderClock(true); //must not forget to start the time slider
         }
+        isPlaying = !isPlaying;
     }
 
     @FXML
@@ -358,7 +362,8 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
             listView.getSelectionModel().select(musicIndex);
             listView.scrollTo(musicIndex);
         } else {
-            //mainPain = new Pane(title, previous, volumeSlider, next, select, goToList, volumeDown, volumeUp, song, slider, mute, totalTime, currentTime, imageView);
+            //mainPain = new Pane(songArtist, previous, volumeSlider, next, select, goToList, volumeDown, volumeUp, songTitle, slider, mute, totalTime, currentTime, albumImage
+            // );
             changingTheme();
             scene.setRoot(mainPain);
         }
@@ -369,7 +374,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     //region music functions
     private void changingTheme() {
         int random = new Random().nextInt(colors.length);
-        mainPain.setBackground(new Background(new BackgroundFill(Paint.valueOf(colors[random]), null, null)));
+//        mainPain.setBackground(new Background(new BackgroundFill(Paint.valueOf(colors[random]), null, null)));
     }
 
     Image getUiImage(String name) {
@@ -378,7 +383,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
     private void savingParameters() {
         try {
-            FileWriter fw = new FileWriter(new File("res/data/Parameters"), false);
+            FileWriter fw = new FileWriter(new File("C://Users//oussama//IdeaProjects//Music_Player_material_design_javaFX//src\\res\\data\\parameters"), false);
             fw.write("" + isRandom + "\n");
             fw.write("" + musicIndex);
             fw.close();
@@ -405,7 +410,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
             if (isFileExists(musicList.get(i).toURI().toString())) {
                 Media hit = new Media(musicList.get(i).toURI().toString());
                 String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
-                //listView.getItems().add(song);
+                //listView.getItems().add(songTitle);
             }
         }
         return true;
@@ -420,11 +425,10 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
                 isRandom = Boolean.valueOf(sc.nextLine());
                 musicIndex = Integer.valueOf(sc.nextLine());
             }
-            if (isFileExists(musicList.get(musicIndex).toURI().toString())) {
-                hit = new Media(musicList.get(musicIndex).toURI().toString());
-                mediaPlayer = new MediaPlayer(hit);
-                mediaPlayer.setOnReady(this::playMusic);
-            }
+            hit = new Media(musicList.get(musicIndex).toURI().toString());
+            mediaPlayer = new MediaPlayer(hit);
+            mediaPlayer.setOnReady(this::playMusic);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -459,7 +463,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
             listView.scrollTo(0);
         }
 
-        //stopping the previous song and its data
+        //stopping the previous songTitle and its data
         if (timer != null) {
             sliderClock(false);
             timer = null;
@@ -471,7 +475,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
         mediaPlayer = new MediaPlayer(hit);
 
-        //this is used to delay the media player enough for the song to be loaded
+        //this is used to delay the media player enough for the songTitle to be loaded
         //this doesn't influence play time (milli-seconds scale)
         mediaPlayer.setOnReady(this::playMusic);
     }
@@ -480,19 +484,19 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         //setting up the sliders (volume and time)
         slider.setValue(0);
         slider.setMax(hit.getDuration().toSeconds());
-        volumeSlider.setValue(mediaPlayer.getVolume());
-        volumeSlider.setMax(mediaPlayer.getVolume());
+//        volumeSlider.setValue(mediaPlayer.getVolume());
+        //      volumeSlider.setMax(mediaPlayer.getVolume());
         mediaPlayer = new MediaPlayer(hit);
         mediaPlayer.setOnEndOfMedia(() -> nextSong(null));
 
-        //setting basic song info (artist name, title)
-        title.setText("" + hit.getMetadata().get("artist"));
+        //setting basic songTitle info (artist name, songArtist)
+        songArtist.setText("" + hit.getMetadata().get("artist"));
         if (hit.getMetadata().get("artist") == null) {
-            title.setText("Now Playing");
+            songArtist.setText("Now Playing");
         }
-        song.setText("" + hit.getMetadata().get("title"));
-        if (hit.getMetadata().get("title") == null) {
-            song.setText(hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " "));
+        songTitle.setText("" + hit.getMetadata().get("songArtist"));
+        if (hit.getMetadata().get("songArtist") == null) {
+            songTitle.setText(hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " "));
         }
 
         sliderClock(false);
@@ -500,14 +504,14 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         img = (Image) hit.getMetadata().get("image");
         if (img == null) {
             try {
-                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("res/images/music.jpg")))));
+                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("C:\\Users\\oussama\\IdeaProjects\\Music_Player_material_design_javaFX\\src\\res\\images\\music.jpg")))));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        imageView.setImage(img);
+        albumImage.setImage(img);
 
-        //playing the song and starting running the time slider
+        //playing the songTitle and starting running the time slider
         mediaPlayer.play();
         mediaPlayer.setMute(isMute);
         sliderClock(true);
