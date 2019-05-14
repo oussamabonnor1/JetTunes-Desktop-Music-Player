@@ -23,3 +23,28 @@
     -fx-fill: #ffffff;
     -fx-stroke: #ffffff;
 }
+
+.chart{
+    -fx-background-color: transparent;
+}
+
+.default-color0.chart-series-area-line {
+    -fx-stroke: transparent;
+}
+
+.default-color0.chart-series-area-fill {
+    -fx-fill: linear-gradient(to bottom, #60CC96 75%, #513E6D);
+}
+
+.titled-pane > *.content
+{
+    -fx-background-color: transparent;
+ }
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.axis {
+    -fx-border-color: transparent;
+}

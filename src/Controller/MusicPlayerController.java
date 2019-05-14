@@ -16,15 +16,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
@@ -52,10 +51,15 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     private Label currentTime;
 
     @FXML
+    private AreaChart<String, Number> areaChart;
+
+    @FXML
     private JFXSlider slider;
     private JFXSlider volumeSlider;
+
     @FXML
     private ImageView playButton;
+
     private JFXButton select;
     private JFXButton volumeUp;
     private JFXButton volumeDown;
@@ -246,6 +250,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
         //endregion
         */
+
         startJetTunes();
 
     }
@@ -319,8 +324,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         else ++musicIndex;
         if (musicIndex == musicList.size()) musicIndex = 0;
         hit = new Media(musicList.get(musicIndex).toURI().toString());
-        mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnReady(this::playMusic);
+        settingUpMediaPlayer(hit);
         savingParameters();
         mediaPlayer.setMute(isMute);
     }
@@ -332,7 +336,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         --musicIndex;
         if (musicIndex < 0) musicIndex = musicList.size() - 1;
         hit = new Media(musicList.get(musicIndex).toURI().toString());
-        mediaPlayer = new MediaPlayer(hit);
+        settingUpMediaPlayer(hit);
         savingParameters();
         mediaPlayer.setOnReady(this::playMusic);
     }
@@ -350,7 +354,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
     @FXML
     public void closeApp(MouseEvent event) {
-
+        System.exit(0);
     }
 
 
@@ -424,9 +428,8 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
                 musicIndex = Integer.valueOf(sc.nextLine());
             }
             hit = new Media(musicList.get(musicIndex).toURI().toString());
-            mediaPlayer = new MediaPlayer(hit);
-            mediaPlayer.setOnReady(this::playMusic);
 
+            settingUpMediaPlayer(hit);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -471,7 +474,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
         hit = new Media(musicList.get(musicIndex).toURI().toString());
 
-        mediaPlayer = new MediaPlayer(hit);
+        settingUpMediaPlayer(hit);
 
         //this is used to delay the media player enough for the songTitle to be loaded
         //this doesn't influence play time (milli-seconds scale)
@@ -482,10 +485,8 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         //setting up the sliders (volume and time)
         slider.setValue(0);
         slider.setMax(hit.getDuration().toSeconds());
-//        volumeSlider.setValue(mediaPlayer.getVolume());
+        //volumeSlider.setValue(mediaPlayer.getVolume());
         //      volumeSlider.setMax(mediaPlayer.getVolume());
-        mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.setOnEndOfMedia(() -> nextSong(null));
 
         //setting basic songTitle info (artist name, songArtist)
         songArtist.setText("" + hit.getMetadata().get("artist"));
@@ -544,6 +545,37 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
                 timer.purge();
             }
         }
+    }
+
+    private MediaPlayer settingUpMediaPlayer(Media hit) {
+        mediaPlayer = new MediaPlayer(hit);
+
+        float[] buffer = createFilledBuffer(mediaPlayer.getAudioSpectrumNumBands(), mediaPlayer.getAudioSpectrumThreshold());
+        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
+        XYChart.Data[] series1Data = new XYChart.Data[100];
+        for (int i = 0; i < series1Data.length; i++) {
+            series1Data[i] = new XYChart.Data<>(Integer.toString(i + 1), 25);
+            series1.getData().add(series1Data[i]);
+        }
+
+        mediaPlayer.setAudioSpectrumListener((timestamp, duration, magnitudes, phases) -> {
+            for (int i = 0; i < series1Data.length; i++) {
+                series1Data[i].setYValue(magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold());
+            }
+        });
+
+        areaChart.getData().clear();
+        areaChart.getData().add(series1);
+        mediaPlayer.setOnReady(this::playMusic);
+
+        mediaPlayer.setOnEndOfMedia(() -> nextSong(null));
+
+        return mediaPlayer;
+    }
+    private float[] createFilledBuffer(int size, float fillValue) {
+        float[] floats = new float[size];
+        Arrays.fill(floats, fillValue);
+        return floats;
     }
     //endregion
 }
