@@ -10,6 +10,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
+import javafx.beans.binding.StringBinding;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -27,6 +28,7 @@ import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.net.URL;
@@ -174,11 +176,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         volumeDown.setTranslateX(275);
         volumeDown.setPrefSize(40, 40);
         volumeDown.setOnAction(this);
-
-        slider = new JFXSlider(0, 100, 0);
-        slider.setTranslateX(50);
-        slider.setTranslateY(490);
-        slider.setPrefSize(350, 50);
+        */
         //this next lambda expression is in charge of changing time of songTitle when dragging mouse
         slider.setOnMouseReleased(event -> mediaPlayer.seek(Duration.seconds(slider.getValue())));
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -193,7 +191,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
                 return "*";
             }
         });
-
+        /*
         listView = new JFXListView();
         listView.setTranslateX(50);
         listView.setTranslateY(50);
