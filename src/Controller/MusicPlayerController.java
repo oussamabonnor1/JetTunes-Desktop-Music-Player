@@ -16,7 +16,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -51,10 +51,11 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     private Label currentTime;
 
     @FXML
-    private AreaChart<String, Number> areaChart;
+    private LineChart<String, Number> areaChart;
 
     @FXML
     private JFXSlider slider;
+    @FXML
     private JFXSlider volumeSlider;
 
     @FXML
@@ -91,40 +92,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         //region refactoring UI
        /* mainPain = new Pane();
 
-        totalTime = new Label("");
-        totalTime.setTextFill(Paint.valueOf("FFFFFF"));
-        totalTime.setTranslateY(520);
-        totalTime.setTranslateX(350);
-        totalTime.setAlignment(Pos.BOTTOM_CENTER);
-        totalTime.setTextAlignment(TextAlignment.CENTER);
-        totalTime.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
-
-        currentTime = new Label("");
-        currentTime.setTextFill(Paint.valueOf("FFFFFF"));
-        currentTime.setTranslateY(520);
-        currentTime.setTranslateX(50);
-        currentTime.setAlignment(Pos.BOTTOM_CENTER);
-        currentTime.setTextAlignment(TextAlignment.CENTER);
-        currentTime.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
-
-        songTitle = new Label("");
-        songTitle.setTextFill(Paint.valueOf("FFFFFF"));
-        songTitle.setTranslateY(120);
-        songTitle.setAlignment(Pos.CENTER);
-        songTitle.setTextAlignment(TextAlignment.CENTER);
-        songTitle.setPrefWidth(450);
-        songTitle.setWrapText(true);
-        songTitle.setFont(Font.font("FangSong", FontWeight.BOLD, 22));
-
-        play = new JFXButton("Start");
-        play.setTextFill(Paint.valueOf("#0F9D58"));
-        play.setBackground(new Background(new BackgroundFill(Paint.valueOf("#FFFFFF"), null, null)));
-        play.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
-        play.setTranslateY(600);
-        play.setTranslateX(165);
-        play.setPrefWidth(120);
-        play.setOnAction(this);
-
         mute = new JFXCheckBox();
         mute.setTranslateX(90);
         mute.setTranslateY(660);
@@ -132,22 +99,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         mute.setTextFill(Paint.valueOf("#FFFFFF"));
         mute.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
         mute.setOnAction(this);
-
-        next = new JFXButton("Next");
-        next.setTextFill(Paint.valueOf("0F9D58"));
-        next.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        next.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
-        next.setTranslateY(600);
-        next.setTranslateX(300);
-        next.setOnAction(this);
-
-        previous = new JFXButton("Prev");
-        previous.setTextFill(Paint.valueOf("0F9D58"));
-        previous.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        previous.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
-        previous.setTranslateY(600);
-        previous.setTranslateX(90);
-        previous.setOnAction(this);
 
         select = new JFXButton("Open");
         select.setTextFill(Paint.valueOf("0F9D58"));
@@ -165,21 +116,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         goToList.setTranslateX(150);
         goToList.setOnAction(this);
 
-        volumeUp = new JFXButton("+");
-        volumeUp.setTextFill(Paint.valueOf("0F9D58"));
-        volumeUp.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        volumeUp.setTranslateY(650);
-        volumeUp.setTranslateX(325);
-        volumeUp.setPrefSize(40, 40);
-        volumeUp.setOnAction(this);
-
-        volumeDown = new JFXButton("-");
-        volumeDown.setTextFill(Paint.valueOf("0F9D58"));
-        volumeDown.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        volumeDown.setTranslateY(650);
-        volumeDown.setTranslateX(275);
-        volumeDown.setPrefSize(40, 40);
-        volumeDown.setOnAction(this);
         */
         //this next lambda expression is in charge of changing time of songTitle when dragging mouse
         slider.setOnMouseReleased(event -> mediaPlayer.seek(Duration.seconds(slider.getValue())));
@@ -195,6 +131,10 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
                 return "*";
             }
         });
+        //these next lambda expressions are in charge of setting volume of the songTitle
+        volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
+        volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
+
         /*
         listView = new JFXListView();
         listView.setTranslateX(50);
@@ -209,31 +149,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
             savingParameters();
             mediaPlayer.setMute(isMute);
         });
-
-        goToPlayer = new JFXButton("Player");
-        goToPlayer.setTextFill(Paint.valueOf("212121"));
-        goToPlayer.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        goToPlayer.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
-        goToPlayer.setTranslateY(650);
-        goToPlayer.setTranslateX(150);
-        goToPlayer.setOnAction(this);
-
-        random = new JFXCheckBox();
-        random.setTranslateX(250);
-        random.setTranslateY(660);
-        random.setText("Random");
-        random.setTextFill(Paint.valueOf("#FFFFFF"));
-        random.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
-        random.setOnAction(this);
-
-        volumeSlider = new JFXSlider(0, 1, 0);
-        volumeSlider.setTranslateX(340);
-        volumeSlider.setTranslateY(620);
-        volumeSlider.setPrefSize(100, 50);
-        volumeSlider.setRotate(270);
-        //these next lambda expressions are in charge of setting volume of the songTitle
-        volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
-        volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
 
         //setting the image view to a default picture assigned by us
         albumImage = new ImageView(img);
@@ -318,7 +233,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
     @FXML
     public void nextSong(MouseEvent event) {
-        changingTheme();
         mediaPlayer.stop();
         if (isRandom) musicIndex = new Random().nextInt(musicList.size());
         else ++musicIndex;
@@ -331,7 +245,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
     @FXML
     private void previousSong() {
-        changingTheme();
         mediaPlayer.stop();
         --musicIndex;
         if (musicIndex < 0) musicIndex = musicList.size() - 1;
@@ -364,9 +277,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
             listView.getSelectionModel().select(musicIndex);
             listView.scrollTo(musicIndex);
         } else {
-            //mainPain = new Pane(songArtist, previous, volumeSlider, next, select, goToList, volumeDown, volumeUp, songTitle, slider, mute, totalTime, currentTime, albumImage
-            // );
-            changingTheme();
             scene.setRoot(mainPain);
         }
         stage.setScene(scene);
@@ -374,10 +284,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     }
 
     //region music functions
-    private void changingTheme() {
-        int random = new Random().nextInt(colors.length);
-//        mainPain.setBackground(new Background(new BackgroundFill(Paint.valueOf(colors[random]), null, null)));
-    }
 
     Image getUiImage(String name) {
         return new Image("res/images/" + name + ".png");
@@ -550,7 +456,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     private MediaPlayer settingUpMediaPlayer(Media hit) {
         mediaPlayer = new MediaPlayer(hit);
 
-        float[] buffer = createFilledBuffer(mediaPlayer.getAudioSpectrumNumBands(), mediaPlayer.getAudioSpectrumThreshold());
         XYChart.Series<String, Number> series1 = new XYChart.Series<>();
         XYChart.Data[] series1Data = new XYChart.Data[100];
         for (int i = 0; i < series1Data.length; i++) {
@@ -561,6 +466,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         mediaPlayer.setAudioSpectrumListener((timestamp, duration, magnitudes, phases) -> {
             for (int i = 0; i < series1Data.length; i++) {
                 series1Data[i].setYValue(magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold());
+
             }
         });
 
@@ -572,10 +478,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
 
         return mediaPlayer;
     }
-    private float[] createFilledBuffer(int size, float fillValue) {
-        float[] floats = new float[size];
-        Arrays.fill(floats, fillValue);
-        return floats;
-    }
+
     //endregion
 }

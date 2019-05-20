@@ -23,18 +23,13 @@
     -fx-fill: #ffffff;
     -fx-stroke: #ffffff;
 }
-
+/*chart area*/
 .chart{
     -fx-background-color: transparent;
 }
 
-.default-color0.chart-series-area-line {
-    -fx-stroke: transparent;
-}
 
-.default-color0.chart-series-area-fill {
-    -fx-fill: linear-gradient(to bottom, #60CC96 75%, #513E6D);
-}
+.default-color0.chart-series-line { -fx-stroke: #60CC96; }
 
 .titled-pane > *.content
 {
