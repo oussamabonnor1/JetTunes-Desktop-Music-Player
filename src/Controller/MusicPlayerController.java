@@ -11,17 +11,13 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.binding.StringBinding;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -34,12 +30,7 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class MusicPlayerController implements EventHandler<ActionEvent>, Initializable {
-
-    private Stage stage;
-    private Scene scene;
-    private Pane mainPain;
-    private Pane listPane;
+public class MusicPlayerController implements Initializable {
 
     @FXML
     private Label songArtist;
@@ -62,13 +53,8 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
     private ImageView playButton;
 
     private JFXButton select;
-    private JFXButton volumeUp;
-    private JFXButton volumeDown;
-    private JFXButton next;
-    private JFXButton previous;
-    private JFXButton goToList;
-    private JFXButton goToPlayer;
-    private JFXCheckBox mute;
+    @FXML
+    private ImageView mute;
     private JFXCheckBox random;
     private JFXListView listView;
     @FXML
@@ -180,43 +166,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         loadingParam();
     }
 
-    @Override
-    public void handle(ActionEvent event) {
-
-        if (event.getSource() == select) {
-            fillingTheList();
-        }
-
-        if (event.getSource() == previous) {
-            previousSong();
-        }
-
-        if (event.getSource() == mute)
-
-        {
-            isMute = !mediaPlayer.isMute();
-            mediaPlayer.setMute(isMute);
-        }
-        if (event.getSource() == volumeUp && volumeSlider.getValue() <= 0.8)
-
-        {
-            mediaPlayer.setVolume(mediaPlayer.getVolume() + 0.2);
-            volumeSlider.setValue(volumeSlider.getValue() + 0.2);
-        }
-        if (event.getSource() == volumeDown && volumeSlider.getValue() >= 0.2)
-
-        {
-            mediaPlayer.setVolume(mediaPlayer.getVolume() - 0.2);
-            volumeSlider.setValue(volumeSlider.getValue() - 0.2);
-        }
-        if (event.getSource() == goToList) {
-            changingView(true);
-        }
-        if (event.getSource() == goToPlayer) {
-            changingView(false);
-        }
-    }
-
     @FXML
     public void play(MouseEvent event) {
         if (!isPlaying) {
@@ -260,6 +209,11 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         savingParameters();
     }
 
+    public void mute(MouseEvent event){
+        isMute = !mediaPlayer.isMute();
+        mediaPlayer.setMute(isMute);
+    }
+
     @FXML
     public void repeatButton(MouseEvent event) {
 
@@ -270,18 +224,6 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         System.exit(0);
     }
 
-
-    private void changingView(boolean list) {
-        if (list) {
-            scene.setRoot(listPane);
-            listView.getSelectionModel().select(musicIndex);
-            listView.scrollTo(musicIndex);
-        } else {
-            scene.setRoot(mainPain);
-        }
-        stage.setScene(scene);
-        stage.show();
-    }
 
     //region music functions
 
@@ -345,7 +287,7 @@ public class MusicPlayerController implements EventHandler<ActionEvent>, Initial
         playButton.setImage(getUiImage("pauseWhite"));
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Music File");
-        File file = fileChooser.showOpenDialog(stage);
+        File file = fileChooser.showOpenDialog(new Stage());
         if (fileChooser.initialDirectoryProperty().getName().matches("initialDirectory")
                 && file.getParentFile().isDirectory()) {
             File parent = file.getParentFile();

@@ -94,7 +94,7 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="68.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
                <children>
-                  <ImageView fx:id="repeatButton1" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#repeatButton" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="mute" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#mute" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../res/images/volumeOnWhite.png" />
                      </image>
