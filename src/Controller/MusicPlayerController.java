@@ -7,17 +7,20 @@ package Controller;
  * */
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXDrawer;
+import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXSlider;
+import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 import javafx.beans.binding.StringBinding;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -55,19 +58,24 @@ public class MusicPlayerController implements Initializable {
     private JFXButton select;
     @FXML
     private ImageView mute;
-    private JFXCheckBox random;
-    private JFXListView listView;
+    @FXML
+    private ImageView randomButton;
     @FXML
     private ImageView albumImage;
+
+    @FXML
+    private JFXHamburger hamburger;
+    @FXML
+    private JFXDrawer musicListDrawer;
+
+    private HamburgerBackArrowBasicTransition transition;
     private Image img;
     private Media hit;
     private MediaPlayer mediaPlayer;
     private Timer timer;
     private TimerTask timerTask;
-
     private ArrayList<File> musicList = new ArrayList<>();
     private int musicIndex = 0;
-    private String[] colors = {"115245", "554455", "224687", "9C27B0", "42A5F5", "80D8FF", "FF9800", "9E9E9E", "#212121"};
     private boolean isMute;
     private boolean isPlaying;
     private boolean isRandom;
@@ -77,14 +85,6 @@ public class MusicPlayerController implements Initializable {
         //setting the stage's parameters (icon, frame type, resizable..)
         //region refactoring UI
        /* mainPain = new Pane();
-
-        mute = new JFXCheckBox();
-        mute.setTranslateX(90);
-        mute.setTranslateY(660);
-        mute.setText("Mute");
-        mute.setTextFill(Paint.valueOf("#FFFFFF"));
-        mute.setFont(Font.font("FangSong", FontWeight.BOLD, 20));
-        mute.setOnAction(this);
 
         select = new JFXButton("Open");
         select.setTextFill(Paint.valueOf("0F9D58"));
@@ -118,8 +118,20 @@ public class MusicPlayerController implements Initializable {
             }
         });
         //these next lambda expressions are in charge of setting volume of the songTitle
-        volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
-        volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue()));
+        volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue() / 100));
+        volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue() / 100));
+
+        //Music drawer setup
+
+        try {
+            VBox vBox = FXMLLoader.load(getClass().getResource("../View/musicListDrawer.fxml"));
+            musicListDrawer.setSidePane(vBox);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        transition = new HamburgerBackArrowBasicTransition(hamburger);
+        transition.setRate(-1);
+
 
         /*
         listView = new JFXListView();
@@ -204,12 +216,21 @@ public class MusicPlayerController implements Initializable {
     }
 
     @FXML
+    void hamburgerClicked(MouseEvent event) {
+        musicListDrawer.setDisable(false);
+        transition.setRate(transition.getCurrentRate() * -1);
+        transition.play();
+        if (musicListDrawer.isShown()) musicListDrawer.close();
+        else musicListDrawer.open();
+    }
+
+    @FXML
     public void randomButton(MouseEvent event) {
         isRandom = !isRandom;
         savingParameters();
     }
 
-    public void mute(MouseEvent event){
+    public void mute(MouseEvent event) {
         isMute = !mediaPlayer.isMute();
         mediaPlayer.setMute(isMute);
     }
@@ -256,13 +277,7 @@ public class MusicPlayerController implements Initializable {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < musicList.size(); i++) {
-            if (isFileExists(musicList.get(i).toURI().toString())) {
-                Media hit = new Media(musicList.get(i).toURI().toString());
-                String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
-                //listView.getItems().add(songTitle);
-            }
-        }
+
         return true;
     }
 
@@ -299,17 +314,12 @@ public class MusicPlayerController implements Initializable {
                     if (filename.endsWith(".mp3")) {
                         musicList.add(parent.listFiles()[i]);
                         fw.write(parent.listFiles()[i].toString() + "\n");
-                        //unnecessary hard coding
-                        Media hit = new Media(parent.listFiles()[i].toURI().toString());
-                        String song = hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " ");
-                        listView.getItems().add(song);
                     }
                 }
                 fw.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            listView.scrollTo(0);
         }
 
         //stopping the previous songTitle and its data
@@ -333,8 +343,6 @@ public class MusicPlayerController implements Initializable {
         //setting up the sliders (volume and time)
         slider.setValue(0);
         slider.setMax(hit.getDuration().toSeconds());
-        //volumeSlider.setValue(mediaPlayer.getVolume());
-        //      volumeSlider.setMax(mediaPlayer.getVolume());
 
         //setting basic songTitle info (artist name, songArtist)
         songArtist.setText("" + hit.getMetadata().get("artist"));
@@ -350,22 +358,18 @@ public class MusicPlayerController implements Initializable {
         //choosing an album picture (if null then we provide one)
         img = (Image) hit.getMetadata().get("image");
         if (img == null) {
-            try {
-                img = new Image(new FileInputStream(new File(String.valueOf(Paths.get("C:\\Users\\oussama\\IdeaProjects\\Music_Player_material_design_javaFX\\src\\res\\images\\music.jpg")))));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            albumImage.setVisible(false);
+            areaChart.setVisible(true);
+        } else {
+            areaChart.setVisible(false);
+            albumImage.setVisible(true);
+            albumImage.setImage(img);
         }
-        albumImage.setImage(img);
 
         //playing the songTitle and starting running the time slider
         mediaPlayer.play();
         mediaPlayer.setMute(isMute);
         sliderClock(true);
-    }
-
-    private boolean isFileExists(String url) {
-        return new File(url).exists();
     }
 
     private void sliderClock(boolean state) {

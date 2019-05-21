@@ -1,148 +1,168 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXDrawer?>
+<?import com.jfoenix.controls.JFXHamburger?>
 <?import com.jfoenix.controls.JFXSlider?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640" prefWidth="640" style="-fx-background-color: #513E6D;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MusicPlayerController">
-    <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints maxHeight="54.0" minHeight="50.0" percentHeight="7.0" prefHeight="54.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="462.0" minHeight="458.0" percentHeight="70.0" prefHeight="458.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="615.0" minHeight="10.0" percentHeight="23.0" prefHeight="487.0" vgrow="SOMETIMES" />
-    </rowConstraints>
-    <children>
-      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #302F50;">
-         <children>
-            <ImageView fitHeight="33.0" fitWidth="42.0" onMouseClicked="#closeApp" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../res/images/quitWhiteCircle.png" />
-               </image>
-               <HBox.margin>
-                  <Insets left="15.0" />
-               </HBox.margin>
-            </ImageView>
-         </children></HBox>
-      <VBox alignment="CENTER" spacing="15.0" GridPane.rowIndex="1">
-         <children>
-            <ImageView fx:id="albumImage" fitHeight="36.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" visible="false">
-               <image>
-                  <Image url="@../res/images/music.jpg" />
-               </image></ImageView>
-            <Label fx:id="songTitle" alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="314.0" text="Song title" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font name="Calibri Bold" size="30.0" />
-               </font>
-            </Label>
-            <Label fx:id="songArtist" alignment="CENTER" contentDisplay="CENTER" prefHeight="20.0" prefWidth="138.0" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="5.0" />
-               </VBox.margin>
-            </Label>
-            <LineChart fx:id="areaChart" alternativeRowFillVisible="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" prefWidth="552.0" stylesheets="@Style/style.css" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
-              <xAxis>
-                <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
-              </xAxis>
-              <yAxis>
-                <NumberAxis forceZeroInRange="false" minorTickVisible="false" prefWidth="0.0" side="LEFT" tickLabelsVisible="false" tickLength="1.0" tickMarkVisible="false" />
-              </yAxis>
-               <VBox.margin>
-                  <Insets bottom="25.0" left="50.0" right="50.0" />
-               </VBox.margin>
-            </LineChart>
-         </children>
-      </VBox>
-      <VBox alignment="CENTER" style="-fx-background-color: #60CC96;" GridPane.rowIndex="2">
-         <children>
-            <HBox alignment="CENTER" prefHeight="49.0" prefWidth="640.0" spacing="10.0" VBox.vgrow="ALWAYS">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
+<StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MusicPlayerController">
+   <children>
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640" prefWidth="640" style="-fx-background-color: #513E6D;">
+          <columnConstraints>
+              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          </columnConstraints>
+          <rowConstraints>
+              <RowConstraints maxHeight="54.0" minHeight="50.0" percentHeight="7.0" prefHeight="54.0" vgrow="SOMETIMES" />
+              <RowConstraints maxHeight="462.0" minHeight="458.0" percentHeight="70.0" prefHeight="458.0" vgrow="SOMETIMES" />
+              <RowConstraints maxHeight="615.0" minHeight="10.0" percentHeight="23.0" prefHeight="487.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+          <children>
+            <AnchorPane style="-fx-background-color: #302F50;">
                <children>
-                    <Label fx:id="currentTime" alignment="CENTER" contentDisplay="CENTER" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                        <font>
-                            <Font name="Arial Bold" size="16.0" />
-                        </font>
-                    </Label>
-                  <JFXSlider fx:id="slider" prefHeight="61.0" prefWidth="454.0" stylesheets="@Style/style.css" value="50.0">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </JFXSlider>
-                  <Label fx:id="totalTime" alignment="CENTER" contentDisplay="CENTER" text="xx:xx" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <ImageView fitHeight="40.0" fitWidth="50.0" onMouseClicked="#closeApp" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="2.0">
+                     <image>
+                        <Image url="@../res/images/quitWhiteCircle.png" />
+                     </image>
+                  </ImageView>
+                  <JFXHamburger fx:id="hamburger" layoutX="596.0" layoutY="12.0" onMouseClicked="#hamburgerClicked" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="2.0" />
+               </children>
+            </AnchorPane>
+            <VBox alignment="CENTER" spacing="15.0" GridPane.rowIndex="1">
+               <children>
+                  <Label fx:id="songTitle" alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="314.0" text="Song title" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Calibri Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="songArtist" alignment="CENTER" contentDisplay="CENTER" prefHeight="20.0" prefWidth="138.0" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Arial Bold" size="16.0" />
                      </font>
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
                   </Label>
+                  <StackPane prefHeight="294.0" prefWidth="640.0">
+                     <children>
+                        <ImageView fx:id="albumImage" fitHeight="280.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                           <image>
+                              <Image url="@../res/images/music.jpg" />
+                           </image>
+                        </ImageView>
+                        <LineChart fx:id="areaChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" stylesheets="@Style/style.css" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis forceZeroInRange="false" minorTickVisible="false" prefWidth="0.0" side="LEFT" tickLabelsVisible="false" tickLength="1.0" tickMarkVisible="false" />
+                          </yAxis>
+                        </LineChart>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="50.0" right="50.0" />
+                     </VBox.margin>
+                  </StackPane>
                </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="68.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+            </VBox>
+            <VBox alignment="CENTER" style="-fx-background-color: #60CC96;" GridPane.rowIndex="2">
                <children>
-                  <ImageView fx:id="mute" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#mute" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../res/images/volumeOnWhite.png" />
-                     </image>
-                  </ImageView>
-                  <JFXSlider fx:id="volumeSlider" prefHeight="24.0" prefWidth="111.0" stylesheets="@Style/volumeSliderStyle.css" value="50.0" />
-                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#previousSong" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../res/images/previousWhite.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets left="50.0" />
-                     </HBox.margin>
-                  </ImageView>
-                  <ImageView fx:id="playButton" fitHeight="75.0" fitWidth="75.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../res/images/playWhiteCircle.png" />
-                     </image>
-                     <HBox.margin>
+                  <HBox alignment="CENTER" prefHeight="49.0" prefWidth="640.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
                         <Insets />
-                     </HBox.margin>
-                  </ImageView>
-                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#nextSong" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../res/images/nextWhite.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets right="125.0" />
-                     </HBox.margin>
-                  </ImageView>
-                  <ImageView fx:id="repeatButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#repeatButton" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../res/images/repeateWhite.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </ImageView>
-                  <ImageView fx:id="randomButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#randomButton" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../res/images/shuffleWhite.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </ImageView>
+                     </VBox.margin>
+                     <children>
+                          <Label fx:id="currentTime" alignment="CENTER" contentDisplay="CENTER" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                              <font>
+                                  <Font name="Arial Bold" size="16.0" />
+                              </font>
+                          </Label>
+                        <JFXSlider fx:id="slider" prefHeight="61.0" prefWidth="454.0" stylesheets="@Style/style.css" value="50.0">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </JFXSlider>
+                        <Label fx:id="totalTime" alignment="CENTER" contentDisplay="CENTER" text="xx:xx" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font name="Arial Bold" size="16.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="68.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ImageView fx:id="mute" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#mute" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/images/volumeOnWhite.png" />
+                           </image>
+                        </ImageView>
+                        <JFXSlider fx:id="volumeSlider" prefHeight="24.0" prefWidth="111.0" stylesheets="@Style/volumeSliderStyle.css" value="50.0" />
+                        <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#previousSong" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/images/previousWhite.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets left="50.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="playButton" fitHeight="75.0" fitWidth="75.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/images/playWhiteCircle.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#nextSong" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/images/nextWhite.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="125.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="repeatButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#repeatButton" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/images/repeateWhite.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="randomButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#randomButton" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../res/images/shuffleWhite.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </ImageView>
+                     </children>
+                  </HBox>
                </children>
-            </HBox>
-         </children>
-      </VBox>
-    </children>
-</GridPane>
+            </VBox>
+          </children>
+      </GridPane>
+      <JFXDrawer fx:id="musicListDrawer" defaultDrawerSize="300.0" direction="RIGHT" disable="true" prefHeight="640.0" prefWidth="506.0">
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
+         <effect>
+            <DropShadow color="#00000096" height="97.965" offsetX="-10.0" radius="54.89625" width="123.62" />
+         </effect></JFXDrawer>
+   </children>
+</StackPane>
