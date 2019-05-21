@@ -25,6 +25,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -36,7 +37,6 @@ import javafx.util.Duration;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MusicPlayerController implements Initializable {
 
@@ -79,7 +79,7 @@ public class MusicPlayerController implements Initializable {
     private MediaPlayer mediaPlayer;
     private Timer timer;
     private TimerTask timerTask;
-    private ArrayList<File> musicList = new ArrayList<>();
+    static ArrayList<File> musicList = new ArrayList<>();
     private int musicIndex = 0;
     private boolean isMute;
     private boolean isPlaying;
@@ -227,6 +227,12 @@ public class MusicPlayerController implements Initializable {
         transition.play();
         if (musicListDrawer.isShown()) musicListDrawer.close();
         else musicListDrawer.open();
+    }
+
+    @FXML
+    void deactivateDrawer(JFXDrawerEvent jfxDrawerEvent) {
+        if(musicListDrawer.isShown()) musicListDrawer.close();
+        musicListDrawer.setDisable(true);
     }
 
     @FXML
@@ -415,7 +421,7 @@ public class MusicPlayerController implements Initializable {
         }
         mediaPlayer.setAudioSpectrumListener((timestamp, duration, magnitudes, phases) -> {
             for (int i = 0; i < series1Data.length; i++) {
-               // float tempValue = magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold();
+                // float tempValue = magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold();
                 //if (tempValue < 10) tempValue = new Random(10).nextFloat() + 10;
                 series1Data[i].setYValue(magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold());
 
@@ -430,6 +436,7 @@ public class MusicPlayerController implements Initializable {
 
         return mediaPlayer;
     }
+
 
     //endregion
 }

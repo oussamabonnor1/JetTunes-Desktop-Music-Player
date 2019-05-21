@@ -157,12 +157,10 @@
             </VBox>
           </children>
       </GridPane>
-      <JFXDrawer fx:id="musicListDrawer" defaultDrawerSize="300.0" direction="RIGHT" disable="true" prefHeight="640.0" prefWidth="506.0">
-         <StackPane.margin>
-            <Insets />
-         </StackPane.margin>
+      <JFXDrawer fx:id="musicListDrawer" defaultDrawerSize="300.0" direction="RIGHT" disable="true" onDrawerClosed="#deactivateDrawer">
          <effect>
             <DropShadow color="#00000096" height="97.965" offsetX="-10.0" radius="54.89625" width="123.62" />
-         </effect></JFXDrawer>
+         </effect>
+      </JFXDrawer>
    </children>
 </StackPane>
