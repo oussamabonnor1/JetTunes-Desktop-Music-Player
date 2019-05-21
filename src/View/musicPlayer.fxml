@@ -74,7 +74,7 @@
                         </LineChart>
                      </children>
                      <VBox.margin>
-                        <Insets left="50.0" right="50.0" />
+                        <Insets />
                      </VBox.margin>
                   </StackPane>
                </children>
@@ -110,7 +110,7 @@
                               <Image url="@../res/images/volumeOnWhite.png" />
                            </image>
                         </ImageView>
-                        <JFXSlider fx:id="volumeSlider" prefHeight="24.0" prefWidth="111.0" stylesheets="@Style/volumeSliderStyle.css" value="50.0" />
+                        <JFXSlider fx:id="volumeSlider" prefHeight="24.0" prefWidth="111.0" stylesheets="@Style/volumeSliderStyle.css" value="100.0" />
                         <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#previousSong" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../res/images/previousWhite.png" />

@@ -10,8 +10,13 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXSlider;
+import com.jfoenix.controls.events.JFXDrawerEvent;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 import javafx.beans.binding.StringBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -30,8 +35,8 @@ import javafx.util.Duration;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MusicPlayerController implements Initializable {
 
@@ -403,14 +408,15 @@ public class MusicPlayerController implements Initializable {
         mediaPlayer = new MediaPlayer(hit);
 
         XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-        XYChart.Data[] series1Data = new XYChart.Data[100];
+        XYChart.Data[] series1Data = new XYChart.Data[60];
         for (int i = 0; i < series1Data.length; i++) {
             series1Data[i] = new XYChart.Data<>(Integer.toString(i + 1), 25);
             series1.getData().add(series1Data[i]);
         }
-
         mediaPlayer.setAudioSpectrumListener((timestamp, duration, magnitudes, phases) -> {
             for (int i = 0; i < series1Data.length; i++) {
+               // float tempValue = magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold();
+                //if (tempValue < 10) tempValue = new Random(10).nextFloat() + 10;
                 series1Data[i].setYValue(magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold());
 
             }
