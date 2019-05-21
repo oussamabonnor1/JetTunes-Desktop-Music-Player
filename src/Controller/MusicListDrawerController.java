@@ -1,30 +1,45 @@
 package Controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import javafx.scene.media.Media;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MusicListDrawerController implements Initializable {
 
     @FXML
     private ListView<String> musicList;
-    ArrayList<File> musicListObservableList;
+    public MusicPlayerController controller;
+    ObservableList<String> musicListObservableList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        musicListObservableList = MusicPlayerController.musicList;
+        controller = MusicPlayerController.instance;
+        settingUpMusicList();
         musicList.setItems(musicListObservableList);
+        musicList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            controller.playSong(musicList.getSelectionModel().getSelectedIndex());
+        });
     }
 
+    void settingUpMusicList() {
+        for (File file : MusicPlayerController.musicList) {
+            Media hit = new Media(file.toURI().toString());
+            if (hit.getMetadata().get("songArtist") == null) {
+                musicListObservableList.add(hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " "));
+            } else musicListObservableList.add("" + hit.getMetadata().get("songArtist"));
+        }
+    }
 
 
 }

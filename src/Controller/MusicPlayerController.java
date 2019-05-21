@@ -13,10 +13,6 @@ import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.events.JFXDrawerEvent;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -25,7 +21,6 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -85,6 +80,8 @@ public class MusicPlayerController implements Initializable {
     private boolean isPlaying;
     private boolean isRandom;
 
+    public static MusicPlayerController instance;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //setting the stage's parameters (icon, frame type, resizable..)
@@ -126,17 +123,6 @@ public class MusicPlayerController implements Initializable {
         volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue() / 100));
         volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue() / 100));
 
-        //Music drawer setup
-
-        try {
-            VBox vBox = FXMLLoader.load(getClass().getResource("../View/musicListDrawer.fxml"));
-            musicListDrawer.setSidePane(vBox);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        transition = new HamburgerBackArrowBasicTransition(hamburger);
-        transition.setRate(-1);
-
 
         /*
         listView = new JFXListView();
@@ -170,7 +156,16 @@ public class MusicPlayerController implements Initializable {
         */
 
         startJetTunes();
-
+        instance = this;
+        //Music drawer setup
+        try {
+            VBox vBox = FXMLLoader.load(getClass().getResource("../View/musicListDrawer.fxml"));
+            musicListDrawer.setSidePane(vBox);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        transition = new HamburgerBackArrowBasicTransition(hamburger);
+        transition.setRate(-1);
     }
 
     @FXML
@@ -209,6 +204,14 @@ public class MusicPlayerController implements Initializable {
         mediaPlayer.setMute(isMute);
     }
 
+    public void playSong(int musicIndex) {
+        mediaPlayer.stop();
+        hit = new Media(musicList.get(musicIndex).toURI().toString());
+        settingUpMediaPlayer(hit);
+        savingParameters();
+        mediaPlayer.setMute(isMute);
+    }
+
     @FXML
     private void previousSong() {
         mediaPlayer.stop();
@@ -231,7 +234,7 @@ public class MusicPlayerController implements Initializable {
 
     @FXML
     void deactivateDrawer(JFXDrawerEvent jfxDrawerEvent) {
-        if(musicListDrawer.isShown()) musicListDrawer.close();
+        if (musicListDrawer.isShown()) musicListDrawer.close();
         musicListDrawer.setDisable(true);
     }
 
