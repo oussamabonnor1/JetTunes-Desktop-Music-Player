@@ -10,10 +10,10 @@
 .list-cell:filled { 
     -fx-background-color: #513E6D;
     -fx-text-fill: white;
-    
+
 }
 
 .list-cell:filled:hover {
-    -fx-background-color: #0093ff;
+    -fx-background-color: #60CC96;
     -fx-text-fill: white;
 }

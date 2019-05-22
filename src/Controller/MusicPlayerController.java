@@ -6,13 +6,13 @@ package Controller;
  * All legal ownership of this software is to JetLight studio
  * */
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.events.JFXDrawerEvent;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 import javafx.beans.binding.StringBinding;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -55,7 +55,6 @@ public class MusicPlayerController implements Initializable {
     @FXML
     private ImageView playButton;
 
-    private JFXButton select;
     @FXML
     private ImageView mute;
     @FXML
@@ -123,7 +122,6 @@ public class MusicPlayerController implements Initializable {
         volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue() / 100));
         volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue() / 100));
 
-
         /*
         listView = new JFXListView();
         listView.setTranslateX(50);
@@ -166,6 +164,12 @@ public class MusicPlayerController implements Initializable {
         }
         transition = new HamburgerBackArrowBasicTransition(hamburger);
         transition.setRate(-1);
+        musicListDrawer.setOnDrawerClosed(new EventHandler<JFXDrawerEvent>() {
+            @Override
+            public void handle(JFXDrawerEvent event) {
+                musicListDrawer.setDisable(true);
+            }
+        });
     }
 
     @FXML
@@ -235,7 +239,6 @@ public class MusicPlayerController implements Initializable {
     @FXML
     void deactivateDrawer(JFXDrawerEvent jfxDrawerEvent) {
         if (musicListDrawer.isShown()) musicListDrawer.close();
-        musicListDrawer.setDisable(true);
     }
 
     @FXML

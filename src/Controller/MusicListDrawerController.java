@@ -1,17 +1,14 @@
 package Controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -39,6 +36,11 @@ public class MusicListDrawerController implements Initializable {
                 musicListObservableList.add(hit.getSource().split("/")[hit.getSource().split("/").length - 1].replace("%20", " "));
             } else musicListObservableList.add("" + hit.getMetadata().get("songArtist"));
         }
+    }
+
+    @FXML
+    void closeDrawer(MouseEvent event){
+        controller.deactivateDrawer(null);
     }
 
 
