@@ -161,7 +161,7 @@ public class MusicPlayerController implements Initializable {
         mediaPlayer.setMute(isMute);
     }
 
-    public void playSong(int musicIndex) {
+    void playSong(int musicIndex) {
         mediaPlayer.stop();
         hit = new Media(musicList.get(musicIndex).toURI().toString());
         settingUpMediaPlayer(hit);

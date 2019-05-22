@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox fx:id="hbox" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: #513E6D;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fx:id="albumImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+         <HBox.margin>
+            <Insets left="10.0" />
+         </HBox.margin>
+         <image>
+            <Image url="@../res/images/albumWhite.png" />
+         </image>
+      </ImageView>
+      <VBox alignment="CENTER" prefWidth="213.0">
+         <children>
+            <Label fx:id="songName" prefHeight="32.0" prefWidth="213.0" text="Song name" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI Bold" size="26.0" />
+               </font>
+            </Label>
+            <Label fx:id="artistName" prefHeight="32.0" prefWidth="213.0" text="Artist name" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI Bold" size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+      <Label fx:id="songLength" prefHeight="32.0" prefWidth="83.0" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+         <font>
+            <Font name="Segoe UI Bold" size="16.0" />
+         </font>
+         <HBox.margin>
+            <Insets right="5.0" />
+         </HBox.margin>
+      </Label>
+   </children>
+</HBox>
