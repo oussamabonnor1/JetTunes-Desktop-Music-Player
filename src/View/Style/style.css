@@ -43,3 +43,11 @@
 .axis {
     -fx-border-color: transparent;
 }
+
+/*Styling the hamburger element*/
+.jfx-hamburger StackPane {
+	-fx-background-color: white;
+}
+.jfx-hamburger {
+    -fx-cursor: hand;
+}

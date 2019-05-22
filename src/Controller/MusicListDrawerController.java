@@ -43,5 +43,4 @@ public class MusicListDrawerController implements Initializable {
         controller.deactivateDrawer(null);
     }
 
-
 }

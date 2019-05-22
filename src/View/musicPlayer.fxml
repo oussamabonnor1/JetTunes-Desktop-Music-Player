@@ -39,7 +39,7 @@
                         <Image url="@../res/images/quitWhiteCircle.png" />
                      </image>
                   </ImageView>
-                  <JFXHamburger fx:id="hamburger" layoutX="596.0" layoutY="12.0" onMouseClicked="#hamburgerClicked" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="2.0" />
+                  <JFXHamburger fx:id="hamburger" alignment="CENTER" layoutX="596.0" layoutY="12.0" onMouseClicked="#hamburgerClicked" stylesheets="@Style/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="2.0" />
                </children>
             </AnchorPane>
             <VBox alignment="CENTER" spacing="15.0" GridPane.rowIndex="1">
@@ -137,7 +137,7 @@
                         </ImageView>
                         <ImageView fx:id="repeatButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#repeatButton" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../res/images/repeateWhite.png" />
+                              <Image url="@../res/images/repeatOffWhite.png" />
                            </image>
                            <HBox.margin>
                               <Insets />
@@ -145,7 +145,7 @@
                         </ImageView>
                         <ImageView fx:id="randomButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#randomButton" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../res/images/shuffleWhite.png" />
+                              <Image url="@../res/images/shuffleOnWhite.png" />
                            </image>
                            <HBox.margin>
                               <Insets />

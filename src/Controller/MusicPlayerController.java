@@ -12,7 +12,6 @@ import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.events.JFXDrawerEvent;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 import javafx.beans.binding.StringBinding;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,6 +30,7 @@ import javafx.util.Duration;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class MusicPlayerController implements Initializable {
@@ -43,7 +43,6 @@ public class MusicPlayerController implements Initializable {
     private Label totalTime;
     @FXML
     private Label currentTime;
-
     @FXML
     private LineChart<String, Number> areaChart;
 
@@ -57,13 +56,19 @@ public class MusicPlayerController implements Initializable {
 
     @FXML
     private ImageView mute;
+
     @FXML
     private ImageView randomButton;
+
     @FXML
     private ImageView albumImage;
 
     @FXML
+    private ImageView repeatButton;
+
+    @FXML
     private JFXHamburger hamburger;
+
     @FXML
     private JFXDrawer musicListDrawer;
 
@@ -78,32 +83,12 @@ public class MusicPlayerController implements Initializable {
     private boolean isMute;
     private boolean isPlaying;
     private boolean isRandom;
+    private boolean isRepeat;
 
     public static MusicPlayerController instance;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //setting the stage's parameters (icon, frame type, resizable..)
-        //region refactoring UI
-       /* mainPain = new Pane();
-
-        select = new JFXButton("Open");
-        select.setTextFill(Paint.valueOf("0F9D58"));
-        select.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        select.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
-        select.setTranslateY(650);
-        select.setTranslateX(190);
-        select.setOnAction(this);
-
-        goToList = new JFXButton("Open Music List");
-        goToList.setTextFill(Paint.valueOf("0F9D58"));
-        goToList.setBackground(new Background(new BackgroundFill(Paint.valueOf("FFFFFF"), null, null)));
-        goToList.setFont(Font.font("FangSong", FontWeight.BOLD, 18));
-        goToList.setTranslateY(700);
-        goToList.setTranslateX(150);
-        goToList.setOnAction(this);
-
-        */
         //this next lambda expression is in charge of changing time of songTitle when dragging mouse
         slider.setOnMouseReleased(event -> mediaPlayer.seek(Duration.seconds(slider.getValue())));
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -122,54 +107,20 @@ public class MusicPlayerController implements Initializable {
         volumeSlider.setOnMouseReleased(event -> mediaPlayer.setVolume(volumeSlider.getValue() / 100));
         volumeSlider.setOnMouseDragged(event -> mediaPlayer.setVolume(volumeSlider.getValue() / 100));
 
-        /*
-        listView = new JFXListView();
-        listView.setTranslateX(50);
-        listView.setTranslateY(50);
-        listView.setPrefSize(350, 550);
-        listView.setOnMouseClicked(event -> {
-            mediaPlayer.stop();
-            musicIndex = listView.getSelectionModel().getSelectedIndex();
-            hit = new Media(musicList.get(musicIndex).toURI().toString());
-            mediaPlayer = new MediaPlayer(hit);
-            mediaPlayer.setOnReady(this::playMusic);
-            savingParameters();
-            mediaPlayer.setMute(isMute);
-        });
-
-        //setting the image view to a default picture assigned by us
-        albumImage = new ImageView(img);
-        albumImage.setY(230);
-        albumImage.setX(150);
-        albumImage.setFitWidth(150);
-        albumImage.setFitHeight(150);
-        Reflection reflection = new Reflection();
-        reflection.setFraction(0.35);
-        albumImage.setEffect(reflection);
-
-        timer = null;
-        mediaPlayer = null;
-
-        //endregion
-        */
-
         startJetTunes();
         instance = this;
-        //Music drawer setup
+        //Music list drawer setup
         try {
+            //loading music list custom layout
             VBox vBox = FXMLLoader.load(getClass().getResource("../View/musicListDrawer.fxml"));
             musicListDrawer.setSidePane(vBox);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //transition is responsible for drawer animation
         transition = new HamburgerBackArrowBasicTransition(hamburger);
         transition.setRate(-1);
-        musicListDrawer.setOnDrawerClosed(new EventHandler<JFXDrawerEvent>() {
-            @Override
-            public void handle(JFXDrawerEvent event) {
-                musicListDrawer.setDisable(true);
-            }
-        });
+        musicListDrawer.setOnDrawerClosed(event -> musicListDrawer.setDisable(true));
     }
 
     @FXML
@@ -199,9 +150,11 @@ public class MusicPlayerController implements Initializable {
     @FXML
     public void nextSong(MouseEvent event) {
         mediaPlayer.stop();
-        if (isRandom) musicIndex = new Random().nextInt(musicList.size());
-        else ++musicIndex;
-        if (musicIndex == musicList.size()) musicIndex = 0;
+        if (!isRepeat) {
+            if (isRandom) musicIndex = new Random().nextInt(musicList.size());
+            else ++musicIndex;
+            if (musicIndex == musicList.size()) musicIndex = 0;
+        }
         hit = new Media(musicList.get(musicIndex).toURI().toString());
         settingUpMediaPlayer(hit);
         savingParameters();
@@ -244,17 +197,21 @@ public class MusicPlayerController implements Initializable {
     @FXML
     public void randomButton(MouseEvent event) {
         isRandom = !isRandom;
+        randomButton.setImage(getUiImage(isRandom ? "shuffleOnWhite" : "ShuffleOFFGreen"));
         savingParameters();
     }
 
     public void mute(MouseEvent event) {
-        isMute = !mediaPlayer.isMute();
+        isMute = !isMute;
         mediaPlayer.setMute(isMute);
+        mute.setImage(getUiImage(isMute ? "volumeOffWhite" : "volumeOnWhite"));
+        savingParameters();
     }
 
     @FXML
     public void repeatButton(MouseEvent event) {
-
+        isRepeat = !isRepeat;
+        repeatButton.setImage(getUiImage(isRepeat ? "repeatOnWhite" : "repeatOffWhite"));
     }
 
     @FXML
@@ -271,9 +228,10 @@ public class MusicPlayerController implements Initializable {
 
     private void savingParameters() {
         try {
-            FileWriter fw = new FileWriter(new File("C://Users//oussama//IdeaProjects//Music_Player_material_design_javaFX//src\\res\\data\\parameters"), false);
+            FileWriter fw = new FileWriter(new File(String.valueOf(Paths.get("src/res/data/parameters"))));
             fw.write("" + isRandom + "\n");
-            fw.write("" + musicIndex);
+            fw.write("" + musicIndex + "\n");
+            fw.write("" + isMute + "\n");
             fw.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -282,7 +240,7 @@ public class MusicPlayerController implements Initializable {
 
     private boolean loadingFile() {
 
-        File f = new File("C:\\Users\\oussama\\IdeaProjects\\Music_Player_material_design_javaFX\\src\\res\\data\\MusicList");
+        File f = new File(String.valueOf(Paths.get("src/res/data/MusicList")));
         Scanner scn;
         try {
             scn = new Scanner(f);
@@ -299,17 +257,22 @@ public class MusicPlayerController implements Initializable {
     }
 
     private void loadingParam() {
-        File paramFile = new File("C:\\Users\\oussama\\IdeaProjects\\Music_Player_material_design_javaFX\\src\\res\\data\\Parameters");
+        File paramFile = new File(String.valueOf(Paths.get("src/res/data/Parameters")));
         Scanner sc;
         try {
             sc = new Scanner(paramFile);
             if (sc.hasNextLine()) {
                 isRandom = Boolean.valueOf(sc.nextLine());
                 musicIndex = Integer.valueOf(sc.nextLine());
+                isMute = Boolean.valueOf(sc.nextLine());
+
+                randomButton.setImage(getUiImage(isRandom ? "shuffleOnWhite" : "ShuffleOFFGreen"));
+                mute.setImage(getUiImage(isMute ? "volumeOffWhite" : "volumeOnWhite"));
             }
             hit = new Media(musicList.get(musicIndex).toURI().toString());
-
             settingUpMediaPlayer(hit);
+            //setting media player after initializing it (avoiding null pointer exception)
+            mediaPlayer.setMute(isMute);
         } catch (IOException e) {
             e.printStackTrace();
         }
