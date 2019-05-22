@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 
 
-public class SongCellController extends ListCell<Song>{
+public class SongCellController extends ListCell<Song> {
 
     @FXML
     private HBox hbox;
@@ -48,6 +48,7 @@ public class SongCellController extends ListCell<Song>{
             songName.setText(String.valueOf(song.getSongName()));
             artistName.setText(String.valueOf(song.getArtistName()));
             albumImage.setImage(song.getAlbumImage());
+            songLength.setText(song.getSongLength());
             setGraphic(hbox);
         }
     }
