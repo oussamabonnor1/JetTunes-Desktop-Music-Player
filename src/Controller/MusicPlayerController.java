@@ -28,7 +28,9 @@ import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
+import javax.print.URIException;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
@@ -164,6 +166,7 @@ public class MusicPlayerController implements Initializable {
 
     void playSong(int musicIndex) {
         mediaPlayer.stop();
+        this.musicIndex = musicIndex;
         hit = new Media(musicList.get(musicIndex).toURI().toString());
         settingUpMediaPlayer(hit);
         savingParameters();
@@ -268,7 +271,6 @@ public class MusicPlayerController implements Initializable {
                 isRandom = Boolean.valueOf(sc.nextLine());
                 musicIndex = Integer.valueOf(sc.nextLine());
                 isMute = Boolean.valueOf(sc.nextLine());
-
                 randomButton.setImage(getUiImage(isRandom ? "shuffleOnWhite" : "ShuffleOFFGreen"));
                 mute.setImage(getUiImage(isMute ? "volumeOffWhite" : "volumeOnWhite"));
             }
@@ -291,7 +293,7 @@ public class MusicPlayerController implements Initializable {
             File parent = file.getParentFile();
             FileWriter fw;
             try {
-                fw = new FileWriter(new File("res/data/MusicList"), true);
+                fw = new FileWriter(new File(String.valueOf(Paths.get("src/res/data/MusicList"))), true);
                 for (int i = 0; i < parent.listFiles().length; i++) {
                     String filename = parent.listFiles()[i].toURI().toString();
                     if (filename.endsWith(".mp3")) {
@@ -304,7 +306,6 @@ public class MusicPlayerController implements Initializable {
                 e.printStackTrace();
             }
         }
-
         //stopping the previous songTitle and its data
         if (timer != null) {
             sliderClock(false);
@@ -312,9 +313,7 @@ public class MusicPlayerController implements Initializable {
             timerTask = null;
         }
         if (mediaPlayer != null) mediaPlayer.stop();
-
         hit = new Media(musicList.get(musicIndex).toURI().toString());
-
         settingUpMediaPlayer(hit);
 
         //this is used to delay the media player enough for the songTitle to be loaded
@@ -356,7 +355,6 @@ public class MusicPlayerController implements Initializable {
     }
 
     private void sliderClock(boolean state) {
-
         if (state) {
             totalTime.setText(String.format("%02d:%02d", (int) slider.getMax() / 60, (int) slider.getMax() % 60));
             timer = new Timer();

@@ -35,8 +35,11 @@ public class MusicListDrawerController implements Initializable {
         controller = MusicPlayerController.instance;
         settingUpMusicList();
         musicList.setItems(musicListObservableList);
-        musicList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-                controller.playSong(musicList.getSelectionModel().getSelectedIndex()));
+        musicList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (musicList.getSelectionModel().getSelectedIndex() >= 0) {
+                controller.playSong(musicList.getSelectionModel().getSelectedItem().getSongIndex());
+            }
+        });
         musicList.setCellFactory(param -> new SongCellController());
         searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.matches("")) musicList.setItems(musicListObservableList);
@@ -58,6 +61,7 @@ public class MusicListDrawerController implements Initializable {
         for (int i = 0; i < MusicPlayerController.musicMediaList.size(); i++) {
             Media hit = MusicPlayerController.musicMediaList.get(i);
             mediaPlayer = new MediaPlayer(hit); //using media player to determine when media meta data is loaded (refactor it if you can)
+            int songIndex = i;
             mediaPlayer.setOnReady(() -> {
                 //assigning song name
                 if (hit.getMetadata().get("songArtist") == null) {
@@ -74,7 +78,7 @@ public class MusicListDrawerController implements Initializable {
                 //assigning song album image
                 albumImage = (Image) hit.getMetadata().get("image");
 
-                musicListObservableList.add(new Song(songName, artistName, songLength, albumImage));
+                musicListObservableList.add(new Song(songIndex, songName, artistName, songLength, albumImage));
             });
 
         }

@@ -3,12 +3,14 @@ package Model;
 import javafx.scene.image.Image;
 
 public class Song {
+    private int songIndex;
     private String songName;
     private String artistName;
     private String songLength;
     private Image albumImage;
 
-    public Song(String songName, String albumName, String songLength, Image albumImage) {
+    public Song(int songIndex, String songName, String albumName, String songLength, Image albumImage) {
+        this.songIndex = songIndex;
         this.songName = songName;
         this.artistName = albumName;
         this.songLength = songLength;
@@ -47,5 +49,13 @@ public class Song {
 
     public void setSongLength(String songLength) {
         this.songLength = songLength;
+    }
+
+    public int getSongIndex() {
+        return songIndex;
+    }
+
+    public void setSongIndex(int songIndex) {
+        this.songIndex = songIndex;
     }
 }
