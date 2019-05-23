@@ -6,39 +6,46 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<HBox fx:id="hbox" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="320.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+
+<VBox fx:id="root" alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="albumImage" fitHeight="60.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-         <HBox.margin>
-            <Insets left="10.0" />
-         </HBox.margin>
-         <image>
-            <Image url="@../res/images/albumWhite.png" />
-         </image>
-      </ImageView>
-      <VBox alignment="CENTER" prefWidth="213.0">
+      <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="320.0" spacing="10.0">
          <children>
-            <Label fx:id="songName" prefHeight="32.0" prefWidth="213.0" text="Song name" textFill="WHITE">
+            <ImageView fx:id="albumImage" fitHeight="60.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../res/images/albumWhite.png" />
+               </image>
+            </ImageView>
+            <VBox alignment="CENTER" prefWidth="213.0">
+               <children>
+                  <Label fx:id="songName" prefHeight="32.0" prefWidth="213.0" text="Song name" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Bold" size="22.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="artistName" prefHeight="32.0" prefWidth="213.0" text="Artist name" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <Label fx:id="songLength" prefHeight="32.0" prefWidth="83.0" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <font>
-                  <Font name="Segoe UI Bold" size="22.0" />
+                  <Font name="Segoe UI Bold" size="16.0" />
                </font>
-            </Label>
-            <Label fx:id="artistName" prefHeight="32.0" prefWidth="213.0" text="Artist name" textFill="WHITE">
-               <font>
-                  <Font name="Segoe UI Bold" size="18.0" />
-               </font>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
             </Label>
          </children>
-      </VBox>
-      <Label fx:id="songLength" prefHeight="32.0" prefWidth="83.0" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-         <font>
-            <Font name="Segoe UI Bold" size="16.0" />
-         </font>
-         <HBox.margin>
-            <Insets right="5.0" />
-         </HBox.margin>
-      </Label>
+      </HBox>
+      <Line endX="220.0" startX="-99.0" stroke="#302f50" strokeWidth="2.0" />
    </children>
-</HBox>
+</VBox>

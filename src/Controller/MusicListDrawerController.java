@@ -1,6 +1,9 @@
 package Controller;
 
 import Model.Song;
+import com.jfoenix.controls.JFXTextField;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +21,9 @@ public class MusicListDrawerController implements Initializable {
 
     @FXML
     private ListView<Song> musicList;
+    @FXML
+    private JFXTextField searchBar;
+
     public MusicPlayerController controller;
     ObservableList<Song> musicListObservableList = FXCollections.observableArrayList();
     MediaPlayer mediaPlayer;
@@ -32,6 +38,20 @@ public class MusicListDrawerController implements Initializable {
         musicList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
                 controller.playSong(musicList.getSelectionModel().getSelectedIndex()));
         musicList.setCellFactory(param -> new SongCellController());
+        searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.matches("")) musicList.setItems(musicListObservableList);
+            else musicList.setItems(songSearch(newValue));
+        });
+    }
+
+    ObservableList<Song> songSearch(String newValue) {
+        ObservableList<Song> tempList = FXCollections.observableArrayList();
+        for (Song song : musicListObservableList) {
+            if (song.getSongName().toLowerCase().contains(newValue.toLowerCase())) {
+                tempList.add(song);
+            }
+        }
+        return tempList;
     }
 
     void settingUpMusicList() {

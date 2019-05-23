@@ -3,12 +3,9 @@ package Controller;
 import Model.Song;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -17,7 +14,7 @@ import java.io.IOException;
 public class SongCellController extends ListCell<Song> {
 
     @FXML
-    private HBox hbox;
+    private VBox root;
 
     @FXML
     private ImageView albumImage;
@@ -49,7 +46,7 @@ public class SongCellController extends ListCell<Song> {
             artistName.setText(String.valueOf(song.getArtistName()));
             albumImage.setImage(song.getAlbumImage());
             songLength.setText(song.getSongLength());
-            setGraphic(hbox);
+            setGraphic(root);
         }
     }
 }

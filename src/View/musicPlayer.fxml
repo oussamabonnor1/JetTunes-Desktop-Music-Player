@@ -44,12 +44,12 @@
             </AnchorPane>
             <VBox alignment="CENTER" spacing="15.0" GridPane.rowIndex="1">
                <children>
-                  <Label fx:id="songTitle" alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="314.0" text="Song title" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label fx:id="songTitle" alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="579.0" text="Song title" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Calibri Bold" size="30.0" />
                      </font>
                   </Label>
-                  <Label fx:id="songArtist" alignment="CENTER" contentDisplay="CENTER" prefHeight="20.0" prefWidth="138.0" text="00:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label fx:id="songArtist" alignment="CENTER" contentDisplay="CENTER" prefHeight="20.0" prefWidth="138.0" text="Artist Name" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Arial Bold" size="16.0" />
                      </font>

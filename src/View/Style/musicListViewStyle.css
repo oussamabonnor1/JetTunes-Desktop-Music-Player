@@ -16,10 +16,26 @@
     -fx-padding: 0px;
 }
 
+.list-cell:empty {
+    -fx-background-color: #513E6D;
+    -fx-text-fill: white;
+    -fx-padding: 0px;
+}
+
 .list-cell:filled:hover {
     -fx-background-color: #60CC96;
     -fx-text-fill: white;
     -fx-padding: 0px;
+}
+
+/*search bar css*/
+.text-input {
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: white;
+}
+.text-input:focused {
+    -fx-highlight-text-fill: white;
+    -fx-prompt-text-fill: white;
 }
 
 
