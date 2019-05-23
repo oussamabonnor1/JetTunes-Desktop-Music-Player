@@ -79,6 +79,7 @@ public class MusicPlayerController implements Initializable {
     private Timer timer;
     private TimerTask timerTask;
     static ArrayList<File> musicList = new ArrayList<>();
+    static ArrayList<Media> musicMediaList = new ArrayList<>();
     private int musicIndex = 0;
     private boolean isMute;
     private boolean isPlaying;
@@ -245,9 +246,11 @@ public class MusicPlayerController implements Initializable {
         try {
             scn = new Scanner(f);
             if (!scn.hasNextLine()) return false;
-
+            int i = 0;
             while (scn.hasNextLine()) {
                 musicList.add(new File(scn.nextLine()));
+                musicMediaList.add(new Media(musicList.get(i).toURI().toString()));
+                i++;
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

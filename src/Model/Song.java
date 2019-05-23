@@ -12,7 +12,7 @@ public class Song {
         this.songName = songName;
         this.artistName = albumName;
         this.songLength = songLength;
-        if (albumImage == null) this.albumImage = new Image("res/images/albumWhite.png");
+        if (albumImage == null) this.albumImage = new Image("res/images/trackWhite.png");
         else this.albumImage = albumImage;
     }
 

@@ -10,7 +10,7 @@
 
 <HBox fx:id="hbox" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: #513E6D;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="albumImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="albumImage" fitHeight="60.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
          <HBox.margin>
             <Insets left="10.0" />
          </HBox.margin>
@@ -22,12 +22,12 @@
          <children>
             <Label fx:id="songName" prefHeight="32.0" prefWidth="213.0" text="Song name" textFill="WHITE">
                <font>
-                  <Font name="Segoe UI Bold" size="26.0" />
+                  <Font name="Segoe UI Bold" size="22.0" />
                </font>
             </Label>
             <Label fx:id="artistName" prefHeight="32.0" prefWidth="213.0" text="Artist name" textFill="WHITE">
                <font>
-                  <Font name="Segoe UI Bold" size="16.0" />
+                  <Font name="Segoe UI Bold" size="18.0" />
                </font>
             </Label>
          </children>

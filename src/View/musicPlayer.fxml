@@ -22,7 +22,7 @@
 
 <StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MusicPlayerController">
    <children>
-      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640" prefWidth="640" style="-fx-background-color: #513E6D;">
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640" prefWidth="720.0" style="-fx-background-color: #513E6D;">
           <columnConstraints>
               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           </columnConstraints>
@@ -64,7 +64,7 @@
                               <Image url="@../res/images/music.jpg" />
                            </image>
                         </ImageView>
-                        <LineChart fx:id="areaChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" stylesheets="@Style/style.css" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
+                        <LineChart fx:id="areaChart" alternativeRowFillVisible="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" stylesheets="@Style/style.css" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
                           </xAxis>
@@ -157,7 +157,7 @@
             </VBox>
           </children>
       </GridPane>
-      <JFXDrawer fx:id="musicListDrawer" defaultDrawerSize="300.0" direction="RIGHT" disable="true" onDrawerClosed="#deactivateDrawer">
+      <JFXDrawer fx:id="musicListDrawer" defaultDrawerSize="340.0" direction="RIGHT" disable="true" onDrawerClosed="#deactivateDrawer">
          <effect>
             <DropShadow color="#00000096" height="97.965" offsetX="-10.0" radius="54.89625" width="123.62" />
          </effect>
