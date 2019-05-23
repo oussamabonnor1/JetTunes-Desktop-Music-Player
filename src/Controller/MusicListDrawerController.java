@@ -2,8 +2,6 @@ package Controller;
 
 import Model.Song;
 import com.jfoenix.controls.JFXTextField;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -87,6 +85,12 @@ public class MusicListDrawerController implements Initializable {
     @FXML
     void closeDrawer(MouseEvent event) {
         controller.deactivateDrawer(null);
+    }
+
+    @FXML
+    void updateMusicList(MouseEvent event) {
+        controller.deletingMusicList();
+        controller.fillingTheList();
     }
 
 }

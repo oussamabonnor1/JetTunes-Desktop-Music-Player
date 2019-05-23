@@ -28,9 +28,7 @@ import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
-import javax.print.URIException;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
@@ -283,7 +281,12 @@ public class MusicPlayerController implements Initializable {
         }
     }
 
-    private void fillingTheList() {
+    void deletingMusicList() {
+            File file = new File(String.valueOf(Paths.get("src/res/data/MusicList")));
+            file.delete();
+    }
+
+    void fillingTheList() {
         playButton.setImage(getUiImage("pauseWhite"));
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Music File");

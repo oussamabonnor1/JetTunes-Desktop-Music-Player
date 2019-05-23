@@ -15,29 +15,38 @@
    <children>
       <HBox alignment="CENTER" prefHeight="79.0" prefWidth="300.0" style="-fx-background-color: #60CC96;">
          <children>
+            <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#closeDrawer" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../res/images/quitWhiteCircle.png" />
+               </image>
+            </ImageView>
             <Label text="Music List" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <font>
                   <Font name="Segoe UI Bold" size="24.0" />
                </font>
                <HBox.margin>
-                  <Insets left="80.0" right="45.0" />
+                  <Insets left="60.0" right="60.0" />
                </HBox.margin>
             </Label>
-            <ImageView fitHeight="46.0" fitWidth="47.0" onMouseClicked="#closeDrawer" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="46.0" fitWidth="47.0" onMouseClicked="#updateMusicList" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../res/images/tackListWhite.png" />
                </image>
             </ImageView>
          </children>
       </HBox>
-      <JFXTextField fx:id="searchBar" focusColor="WHITE" prefHeight="44.0" prefWidth="240.0" promptText="Search..." style="-fx-background-color: #513E6D;" stylesheets="@Style/musicListViewStyle.css" unFocusColor="WHITE">
+      <HBox alignment="BOTTOM_CENTER">
          <VBox.margin>
             <Insets bottom="5.0" left="50.0" right="50.0" top="5.0" />
          </VBox.margin>
-         <font>
-            <Font name="Segoe UI Bold" size="18.0" />
-         </font>
-      </JFXTextField>
+         <children>
+            <JFXTextField fx:id="searchBar" focusColor="WHITE" prefHeight="44.0" prefWidth="240.0" promptText="Search..." stylesheets="@Style/musicListViewStyle.css" unFocusColor="WHITE">
+               <font>
+                  <Font name="Segoe UI Bold" size="18.0" />
+               </font>
+            </JFXTextField>
+         </children>
+      </HBox>
       <ListView fx:id="musicList" style="-fx-background-color: #513E6D;" stylesheets="@Style/musicListViewStyle.css" VBox.vgrow="ALWAYS">
          <cursor>
             <Cursor fx:constant="HAND" />
