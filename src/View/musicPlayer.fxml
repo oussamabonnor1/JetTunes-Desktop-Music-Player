@@ -64,7 +64,7 @@
                               <Image url="@../res/images/music.jpg" />
                            </image>
                         </ImageView>
-                        <LineChart fx:id="areaChart" alternativeRowFillVisible="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" stylesheets="@Style/style.css" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
+                        <LineChart fx:id="areaChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" stylesheets="@Style/style.css" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
                           </xAxis>
