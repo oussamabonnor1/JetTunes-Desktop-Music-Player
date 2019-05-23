@@ -15,35 +15,47 @@
    <children>
       <HBox alignment="CENTER" prefHeight="79.0" prefWidth="300.0" style="-fx-background-color: #60CC96;">
          <children>
+            <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#updateMusicList" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../res/images/tackListWhite.png" />
+               </image>
+            </ImageView>
+            <HBox alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="46.0" fitWidth="94.0" onMouseClicked="#updateMusicList" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../res/images/logoSmall.png" />
+                     </image>
+                  </ImageView>
+                  <Label prefHeight="58.0" prefWidth="104.0" text="JetTunes" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Bold" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+               <HBox.margin>
+                  <Insets left="40.0" right="40.0" />
+               </HBox.margin>
+            </HBox>
             <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#closeDrawer" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../res/images/quitWhiteCircle.png" />
-               </image>
-            </ImageView>
-            <Label text="Music List" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font name="Segoe UI Bold" size="24.0" />
-               </font>
-               <HBox.margin>
-                  <Insets left="60.0" right="60.0" />
-               </HBox.margin>
-            </Label>
-            <ImageView fitHeight="46.0" fitWidth="47.0" onMouseClicked="#updateMusicList" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../res/images/tackListWhite.png" />
                </image>
             </ImageView>
          </children>
       </HBox>
       <HBox alignment="BOTTOM_CENTER">
          <VBox.margin>
-            <Insets bottom="5.0" left="50.0" right="50.0" top="5.0" />
+            <Insets bottom="15.0" left="50.0" right="40.0" top="5.0" />
          </VBox.margin>
          <children>
             <JFXTextField fx:id="searchBar" focusColor="WHITE" prefHeight="44.0" prefWidth="240.0" promptText="Search..." stylesheets="@Style/musicListViewStyle.css" unFocusColor="WHITE">
                <font>
                   <Font name="Segoe UI Bold" size="18.0" />
                </font>
+               <HBox.margin>
+                  <Insets right="15.0" />
+               </HBox.margin>
             </JFXTextField>
          </children>
       </HBox>

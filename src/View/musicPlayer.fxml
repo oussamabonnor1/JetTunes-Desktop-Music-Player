@@ -59,9 +59,9 @@
                   </Label>
                   <StackPane prefHeight="294.0" prefWidth="640.0">
                      <children>
-                        <ImageView fx:id="albumImage" fitHeight="280.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                        <ImageView fx:id="albumImage" disable="true" fitHeight="280.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" visible="false">
                            <image>
-                              <Image url="@../res/images/music.jpg" />
+                              <Image url="@../res/images/logo.jpg" />
                            </image>
                         </ImageView>
                         <LineChart fx:id="areaChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" stylesheets="@Style/style.css" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
