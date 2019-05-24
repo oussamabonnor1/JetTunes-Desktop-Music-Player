@@ -13,12 +13,6 @@
 <img width="400" src="src/res/screenshots/music drawer demo GIF.gif">
 <img width="400" src="src/res/screenshots/search bar demo GIF.gif">
 
-## Features:
-
-* Currently supports mp3 media only
-* Dulicated songs are accepted for now
-* Saving music list is done by text file (no JDBC)
-
 ## TODO:
 
 - [ ] Make player support other formats than MP3.
