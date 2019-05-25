@@ -6,6 +6,7 @@ package Controller;
  * All legal ownership of this software is to JetLight studio
  * */
 
+import ToolBox.DbConnection;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXSlider;
@@ -31,9 +32,7 @@ import javafx.util.Duration;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class MusicPlayerController implements Initializable {
@@ -232,10 +231,11 @@ public class MusicPlayerController implements Initializable {
     }
 
     private void savingParameters() {
-        /*
-        System.out.println(getClass().getResource("../res/data/Parameters"));
+
         try {
-            File file = new File(getClass().getResource("../res/data/Parameters").getFile());
+            System.out.println(getClass().getResource("../res/data/Parameters").toURI().toString().replace("%20", " "));
+            //FileOutputStream outputStream = new FileOutputStream(new File())
+            File file = new File(getClass().getResource("../res/data/Parameters").toURI().toString().replace("%20", " "));
             FileWriter fw = new FileWriter(file);
             fw.write("" + isRandom + "\n");
             fw.write("" + musicIndex + "\n");
@@ -243,12 +243,14 @@ public class MusicPlayerController implements Initializable {
             fw.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
-        */
+
     }
 
     private boolean loadingFile() {
-        InputStream is = getClass().getResourceAsStream("/res/data/MusicList");
+        /*InputStream is = getClass().getResourceAsStream("/res/data/MusicList");
         InputStreamReader sReader = new InputStreamReader(is);
         Scanner scn;
         scn = new Scanner(sReader);
@@ -264,6 +266,17 @@ public class MusicPlayerController implements Initializable {
             }
         }
         return true;
+        */
+        ArrayList<String> musicListPaths = DbConnection.getMusicList();
+        if (musicListPaths.size() == 0) {
+            return false;
+        } else {
+            for (int i = 0; i < musicListPaths.size(); i++) {
+                musicList.add(new File(musicListPaths.get(i)));
+                musicMediaList.add(new Media(musicList.get(i).toURI().toString()));
+            }
+            return true;
+        }
     }
 
     private void loadingParam() {
@@ -297,19 +310,13 @@ public class MusicPlayerController implements Initializable {
         if (fileChooser.initialDirectoryProperty().getName().matches("initialDirectory")
                 && file.getParentFile().isDirectory()) {
             File parent = file.getParentFile();
-            FileWriter fw;
-            try {
-                fw = new FileWriter(new File(String.valueOf(Paths.get("src/res/data/MusicList"))), true);
-                for (int i = 0; i < parent.listFiles().length; i++) {
-                    String filename = parent.listFiles()[i].toURI().toString();
-                    if (filename.endsWith(".mp3")) {
-                        musicList.add(parent.listFiles()[i]);
-                        fw.write(parent.listFiles()[i].toString() + "\n");
-                    }
+
+            for (int i = 0; i < parent.listFiles().length; i++) {
+                String filename = parent.listFiles()[i].toURI().toString();
+                if (filename.endsWith(".mp3")) {
+                    musicList.add(parent.listFiles()[i]);
+                    DbConnection.addSong("musicList", parent.listFiles()[i].toString());
                 }
-                fw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
         //stopping the previous songTitle and its data

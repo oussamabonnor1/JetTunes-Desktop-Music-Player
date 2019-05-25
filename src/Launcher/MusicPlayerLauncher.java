@@ -1,5 +1,6 @@
 package Launcher;
 
+import ToolBox.DbConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,8 @@ public class MusicPlayerLauncher extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         //setting the stage's parameters (icon, frame type, resizable..)
+        DbConnection.createConnection("JetTunes");
+        DbConnection.createTable("musicList");
         stage = primaryStage;
         stage.setTitle("JetTunes");
         stage.setResizable(false);
