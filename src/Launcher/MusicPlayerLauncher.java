@@ -30,7 +30,7 @@ public class MusicPlayerLauncher extends Application {
         stage.setResizable(false);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.getIcons().add(new Image("res/images/logo.png"));
-        Parent root = FXMLLoader.load(getClass().getResource("../View/musicPlayer.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/View/musicPlayer.fxml"));
         Scene scene = new Scene(root);
 
         stage.setScene(scene);

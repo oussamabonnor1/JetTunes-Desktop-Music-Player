@@ -29,8 +29,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class MusicPlayerController implements Initializable {
@@ -113,7 +116,7 @@ public class MusicPlayerController implements Initializable {
         //Music list drawer setup
         try {
             //loading music list custom layout
-            VBox vBox = FXMLLoader.load(getClass().getResource("../View/musicListDrawer.fxml"));
+            VBox vBox = FXMLLoader.load(getClass().getResource("/View/musicListDrawer.fxml"));
             musicListDrawer.setSidePane(vBox);
         } catch (IOException e) {
             e.printStackTrace();
@@ -229,8 +232,11 @@ public class MusicPlayerController implements Initializable {
     }
 
     private void savingParameters() {
+        /*
+        System.out.println(getClass().getResource("../res/data/Parameters"));
         try {
-            FileWriter fw = new FileWriter(new File(String.valueOf(Paths.get("src/res/data/parameters"))));
+            File file = new File(getClass().getResource("../res/data/Parameters").getFile());
+            FileWriter fw = new FileWriter(file);
             fw.write("" + isRandom + "\n");
             fw.write("" + musicIndex + "\n");
             fw.write("" + isMute + "\n");
@@ -238,52 +244,49 @@ public class MusicPlayerController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 
     private boolean loadingFile() {
-
-        File f = new File(String.valueOf(Paths.get("src/res/data/MusicList")));
+        InputStream is = getClass().getResourceAsStream("/res/data/MusicList");
+        InputStreamReader sReader = new InputStreamReader(is);
         Scanner scn;
-        try {
-            scn = new Scanner(f);
-            if (!scn.hasNextLine()) return false;
-            int i = 0;
-            while (scn.hasNextLine()) {
-                musicList.add(new File(scn.nextLine()));
+        scn = new Scanner(sReader);
+
+        if (!scn.hasNextLine()) return false;
+        int i = 0;
+        while (scn.hasNextLine()) {
+            File file = new File(scn.nextLine());
+            if (file.exists()) {
+                musicList.add(file);
                 musicMediaList.add(new Media(musicList.get(i).toURI().toString()));
                 i++;
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
-
         return true;
     }
 
     private void loadingParam() {
-        File paramFile = new File(String.valueOf(Paths.get("src/res/data/Parameters")));
-        Scanner sc;
-        try {
-            sc = new Scanner(paramFile);
-            if (sc.hasNextLine()) {
-                isRandom = Boolean.valueOf(sc.nextLine());
-                musicIndex = Integer.valueOf(sc.nextLine());
-                isMute = Boolean.valueOf(sc.nextLine());
-                randomButton.setImage(getUiImage(isRandom ? "shuffleOnWhite" : "ShuffleOFFGreen"));
-                mute.setImage(getUiImage(isMute ? "volumeOffWhite" : "volumeOnWhite"));
-            }
-            hit = new Media(musicList.get(musicIndex).toURI().toString());
-            settingUpMediaPlayer(hit);
-            //setting media player after initializing it (avoiding null pointer exception)
-            mediaPlayer.setMute(isMute);
-        } catch (IOException e) {
-            e.printStackTrace();
+        InputStream is = getClass().getResourceAsStream("/res/data/Parameters");
+        InputStreamReader sReader = new InputStreamReader(is);
+        //File paramFile = new File(String.valueOf(Paths.get("src/res/data/Parameters")));
+        Scanner sc = new Scanner(sReader);
+        if (sc.hasNextLine()) {
+            isRandom = Boolean.valueOf(sc.nextLine());
+            musicIndex = Integer.valueOf(sc.nextLine());
+            isMute = Boolean.valueOf(sc.nextLine());
+            randomButton.setImage(getUiImage(isRandom ? "shuffleOnWhite" : "ShuffleOFFGreen"));
+            mute.setImage(getUiImage(isMute ? "volumeOffWhite" : "volumeOnWhite"));
         }
+        hit = new Media(musicList.get(musicIndex).toURI().toString());
+        settingUpMediaPlayer(hit);
+        //setting media player after initializing it (avoiding null pointer exception)
+        mediaPlayer.setMute(isMute);
     }
 
     void deletingMusicList() {
-            File file = new File(String.valueOf(Paths.get("src/res/data/MusicList")));
-            file.delete();
+        File file = new File(String.valueOf(Paths.get("src/res/data/MusicList")));
+        file.delete();
     }
 
     void fillingTheList() {
@@ -394,7 +397,7 @@ public class MusicPlayerController implements Initializable {
         }
         mediaPlayer.setAudioSpectrumListener((timestamp, duration, magnitudes, phases) -> {
             for (int i = 0; i < series1Data.length; i++) {
-                 float tempValue = magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold();
+                float tempValue = magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold();
                 series1Data[(i + 25) % 60].setYValue(tempValue);
             }
         });
@@ -407,7 +410,6 @@ public class MusicPlayerController implements Initializable {
 
         return mediaPlayer;
     }
-
 
     //endregion
 }

@@ -35,7 +35,7 @@ public class SongCellController extends ListCell<Song> {
             setText(null);
             setGraphic(null);
         } else {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../View/songCustomLayout.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/View/songCustomLayout.fxml"));
             fxmlLoader.setController(this);
             try {
                 fxmlLoader.load();
