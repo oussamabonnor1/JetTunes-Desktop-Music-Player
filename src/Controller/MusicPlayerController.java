@@ -24,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
@@ -279,8 +280,6 @@ public class MusicPlayerController implements Initializable {
     }
 
     private void loadingParam() {
-        //InputStream is = getClass().getResourceAsStream("/JetTunes/data/Parameters");
-        //InputStreamReader sReader = new InputStreamReader(is);
         File paramFile = new File(String.valueOf(Paths.get(pathTillProject + "/JetTunes/data/Parameters")));
         Scanner sc = null;
         try {
@@ -302,40 +301,46 @@ public class MusicPlayerController implements Initializable {
     }
 
     void deletingMusicList() {
-        File file = new File(String.valueOf(Paths.get("src/res/data/MusicList")));
-        file.delete();
+        DbConnection.dropTable();
     }
 
     void fillingTheList() {
-        playButton.setImage(getUiImage("pauseWhite"));
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Music File");
-        File file = fileChooser.showOpenDialog(new Stage());
-        if (fileChooser.initialDirectoryProperty().getName().matches("initialDirectory")
-                && file.getParentFile().isDirectory()) {
-            File parent = file.getParentFile();
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Choose a music directory");
+        File file = directoryChooser.showDialog(new Stage());
 
-            for (int i = 0; i < parent.listFiles().length; i++) {
-                String filename = parent.listFiles()[i].toURI().toString();
-                if (filename.endsWith(".mp3")) {
-                    musicList.add(parent.listFiles()[i]);
-                    DbConnection.addSong("musicList", parent.listFiles()[i].toString());
+        if (file != null) {
+            //clearing music to avoid duplicated songs
+            musicList.clear();
+            musicMediaList.clear();
+
+            if (directoryChooser.initialDirectoryProperty().getName().matches("initialDirectory")
+                    && file.getParentFile().isDirectory()) {
+                File parent = file;
+
+                for (int i = 0; i < parent.listFiles().length; i++) {
+                    String filename = parent.listFiles()[i].toURI().toString();
+                    if (filename.endsWith(".mp3")) {
+                        musicList.add(parent.listFiles()[i]);
+                        DbConnection.addSong("musicList", parent.listFiles()[i].toString());
+                    }
                 }
             }
-        }
-        //stopping the previous songTitle and its data
-        if (timer != null) {
-            sliderClock(false);
-            timer = null;
-            timerTask = null;
-        }
-        if (mediaPlayer != null) mediaPlayer.stop();
-        hit = new Media(musicList.get(musicIndex).toURI().toString());
-        settingUpMediaPlayer(hit);
 
-        //this is used to delay the media player enough for the songTitle to be loaded
-        //this doesn't influence play time (milli-seconds scale)
-        mediaPlayer.setOnReady(this::playMusic);
+            //stopping the previous songTitle and its data
+            if (timer != null) {
+                sliderClock(false);
+                timer = null;
+                timerTask = null;
+            }
+            if (mediaPlayer != null) mediaPlayer.stop();
+            hit = new Media(musicList.get(musicIndex).toURI().toString());
+            settingUpMediaPlayer(hit);
+
+            //this is used to delay the media player enough for the songTitle to be loaded
+            //this doesn't influence play time (milli-seconds scale)
+            mediaPlayer.setOnReady(this::playMusic);
+        }
     }
 
     private void playMusic() {

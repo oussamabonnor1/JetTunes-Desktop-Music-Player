@@ -51,7 +51,7 @@ public class DbConnection {
 
     public static void addSong(String tableName, String songName) {
         try {
-            songName = songName.replaceAll("'","`");
+            songName = songName.replaceAll("'", "`");
             String sql = "INSERT INTO " + tableName + " (songName) " +
                     "VALUES ('" + songName + "');";
             stmt.executeUpdate(sql);
@@ -67,6 +67,16 @@ public class DbConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void dropTable() {
+        try {
+            String sql = "Drop table if exists musicList;";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        createTable("musicList");
     }
 
 }

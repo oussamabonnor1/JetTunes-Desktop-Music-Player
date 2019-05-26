@@ -91,6 +91,7 @@ public class MusicListDrawerController implements Initializable {
     void updateMusicList(MouseEvent event) {
         controller.deletingMusicList();
         controller.fillingTheList();
+        settingUpMusicList();
     }
 
 }
