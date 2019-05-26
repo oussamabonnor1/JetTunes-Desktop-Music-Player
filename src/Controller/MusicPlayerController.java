@@ -272,7 +272,10 @@ public class MusicPlayerController implements Initializable {
             return false;
         } else {
             for (int i = 0; i < musicListPaths.size(); i++) {
-                musicList.add(new File(musicListPaths.get(i)));
+                String temp = musicListPaths.get(i);
+                if (musicListPaths.get(i).contains("`"))
+                    temp = musicListPaths.get(i).replaceAll("`", "'");
+                musicList.add(new File(temp));
                 musicMediaList.add(new Media(musicList.get(i).toURI().toString()));
             }
             return true;

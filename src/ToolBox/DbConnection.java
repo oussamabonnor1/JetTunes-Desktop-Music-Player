@@ -29,7 +29,7 @@ public class DbConnection {
             stmt = connection.createStatement();
             // Creating Table
             String sql = "CREATE TABLE IF NOT EXISTS " + name + " " +
-                    "(sogName TEXT)";
+                    "(songName TEXT)";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,6 +51,7 @@ public class DbConnection {
 
     public static void addSong(String tableName, String songName) {
         try {
+            songName = songName.replaceAll("'","`");
             String sql = "INSERT INTO " + tableName + " (songName) " +
                     "VALUES ('" + songName + "');";
             stmt.executeUpdate(sql);
