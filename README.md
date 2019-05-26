@@ -20,6 +20,7 @@
 - [x] Saving music list & parameters in DB or JSON file (currently saved in text for simplicity).
 - [ ] Adding more custom parameters and music options.
 - [ ] Making the music visualizer better.
+- [ ] Adding music lyrics API.
 
 ## Tools & languages: 
 
