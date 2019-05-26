@@ -82,6 +82,7 @@ public class MusicPlayerController implements Initializable {
     private TimerTask timerTask;
     static ArrayList<File> musicList = new ArrayList<>();
     static ArrayList<Media> musicMediaList = new ArrayList<>();
+    String pathTillProject = System.getProperty("user.dir");
     private int musicIndex = 0;
     private boolean isMute;
     private boolean isPlaying;
@@ -128,7 +129,7 @@ public class MusicPlayerController implements Initializable {
 
     @FXML
     void startJetTunes() {
-        if (loadingFile()) {
+        if (loadingMusic()) {
             playButton.setImage(getUiImage("pauseWhite"));
         } else {
             fillingTheList();
@@ -231,11 +232,8 @@ public class MusicPlayerController implements Initializable {
     }
 
     private void savingParameters() {
-
         try {
-            System.out.println(getClass().getResource("../res/data/Parameters").toURI().toString().replace("%20", " "));
-            //FileOutputStream outputStream = new FileOutputStream(new File())
-            File file = new File(getClass().getResource("../res/data/Parameters").toURI().toString().replace("%20", " "));
+            File file = new File(pathTillProject + "/JetTunes/data/Parameters");
             FileWriter fw = new FileWriter(file);
             fw.write("" + isRandom + "\n");
             fw.write("" + musicIndex + "\n");
@@ -243,13 +241,11 @@ public class MusicPlayerController implements Initializable {
             fw.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         }
 
     }
 
-    private boolean loadingFile() {
+    private boolean loadingMusic() {
         /*InputStream is = getClass().getResourceAsStream("/res/data/MusicList");
         InputStreamReader sReader = new InputStreamReader(is);
         Scanner scn;
@@ -283,21 +279,26 @@ public class MusicPlayerController implements Initializable {
     }
 
     private void loadingParam() {
-        InputStream is = getClass().getResourceAsStream("/res/data/Parameters");
-        InputStreamReader sReader = new InputStreamReader(is);
-        //File paramFile = new File(String.valueOf(Paths.get("src/res/data/Parameters")));
-        Scanner sc = new Scanner(sReader);
-        if (sc.hasNextLine()) {
-            isRandom = Boolean.valueOf(sc.nextLine());
-            musicIndex = Integer.valueOf(sc.nextLine());
-            isMute = Boolean.valueOf(sc.nextLine());
-            randomButton.setImage(getUiImage(isRandom ? "shuffleOnWhite" : "ShuffleOFFGreen"));
-            mute.setImage(getUiImage(isMute ? "volumeOffWhite" : "volumeOnWhite"));
+        //InputStream is = getClass().getResourceAsStream("/JetTunes/data/Parameters");
+        //InputStreamReader sReader = new InputStreamReader(is);
+        File paramFile = new File(String.valueOf(Paths.get(pathTillProject + "/JetTunes/data/Parameters")));
+        Scanner sc = null;
+        try {
+            sc = new Scanner(paramFile);
+            if (sc.hasNextLine()) {
+                isRandom = Boolean.valueOf(sc.nextLine());
+                musicIndex = Integer.valueOf(sc.nextLine());
+                isMute = Boolean.valueOf(sc.nextLine());
+                randomButton.setImage(getUiImage(isRandom ? "shuffleOnWhite" : "ShuffleOFFGreen"));
+                mute.setImage(getUiImage(isMute ? "volumeOffWhite" : "volumeOnWhite"));
+            }
+            hit = new Media(musicList.get(musicIndex).toURI().toString());
+            settingUpMediaPlayer(hit);
+            //setting media player after initializing it (avoiding null pointer exception)
+            mediaPlayer.setMute(isMute);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        hit = new Media(musicList.get(musicIndex).toURI().toString());
-        settingUpMediaPlayer(hit);
-        //setting media player after initializing it (avoiding null pointer exception)
-        mediaPlayer.setMute(isMute);
     }
 
     void deletingMusicList() {
