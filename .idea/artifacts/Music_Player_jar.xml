@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Music Player:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Music_Player_jar</output-path>
+    <root id="archive" name="Music Player.jar">
+      <element id="module-output" name="Music Player" />
+      <element id="library" level="project" name="jfoenix" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/java/Jars/sqlite-jdbc-3.6.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

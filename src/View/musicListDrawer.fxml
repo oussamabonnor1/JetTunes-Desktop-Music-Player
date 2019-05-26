@@ -15,9 +15,9 @@
    <children>
       <HBox alignment="CENTER" prefHeight="79.0" prefWidth="300.0" style="-fx-background-color: #60CC96;">
          <children>
-            <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#updateMusicList" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="40.0" fitWidth="30.0" onMouseClicked="#closeDrawer" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../res/images/tackListWhite.png" />
+                  <Image url="@../res/images/quitWhiteCircle.png" />
                </image>
             </ImageView>
             <HBox alignment="CENTER">
@@ -37,9 +37,9 @@
                   <Insets left="40.0" right="40.0" />
                </HBox.margin>
             </HBox>
-            <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#closeDrawer" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#updateMusicList" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../res/images/quitWhiteCircle.png" />
+                  <Image url="@../res/images/tackListWhite.png" />
                </image>
             </ImageView>
          </children>
