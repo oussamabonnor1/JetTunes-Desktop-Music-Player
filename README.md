@@ -17,7 +17,7 @@
 
 - [ ] Make player support other formats than MP3.
 - [ ] Skip duplicated songs in music lists.
-- [ ] Saving music list & parameters in DB or JSON file (currently saved in text for simplicity).
+- [x] Saving music list & parameters in DB or JSON file (currently saved in text for simplicity).
 - [ ] Adding more custom parameters and music options.
 - [ ] Making the music visualizer better.
 
