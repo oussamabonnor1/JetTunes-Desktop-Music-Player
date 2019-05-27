@@ -9,7 +9,6 @@ package Controller;
 import ToolBox.DbConnection;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
-import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.events.JFXDrawerEvent;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
@@ -27,13 +26,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
@@ -217,6 +214,11 @@ public class MusicPlayerController implements Initializable {
     @FXML
     public void closeApp(MouseEvent event) {
         System.exit(0);
+    }
+
+    @FXML
+    void minimizeApp(MouseEvent event) {
+        ((Stage) ((ImageView) event.getSource()).getScene().getWindow()).setIconified(true);
     }
 
 

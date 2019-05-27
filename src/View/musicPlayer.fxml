@@ -35,7 +35,7 @@
           <children>
             <AnchorPane style="-fx-background-color: #302F50;">
                <children>
-                  <ImageView fitHeight="40.0" fitWidth="29.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#closeApp" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="9.0">
+                  <ImageView fitHeight="40.0" fitWidth="29.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#minimizeApp" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="9.0">
                      <image>
                         <Image url="@../res/images/minimizeWhite.png" />
                      </image>
