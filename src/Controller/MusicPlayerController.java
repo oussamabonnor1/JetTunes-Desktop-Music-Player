@@ -463,6 +463,7 @@ public class MusicPlayerController implements Initializable {
 
         areaChart.getData().clear();
         areaChart.getData().add(series1);
+        mediaPlayer.setVolume(volumeSlider.getValue()/100);
         mediaPlayer.setOnReady(this::playMusic);
 
         mediaPlayer.setOnEndOfMedia(() -> nextSong(null));
