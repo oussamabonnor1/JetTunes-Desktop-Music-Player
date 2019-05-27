@@ -9,6 +9,16 @@ public class DbConnection {
     public static Statement stmt = null;
     public static String dbName = "jetTunesData.sqlite";
 
+    public static void main(String[] args) {
+        try {
+            createConnection("JetTunes");
+            stmt = connection.createStatement();
+            dropTable();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void createConnection(String filePath) throws SQLException {
         try {
             Class.forName("org.sqlite.JDBC");

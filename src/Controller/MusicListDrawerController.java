@@ -56,8 +56,8 @@ public class MusicListDrawerController implements Initializable {
     }
 
     void settingUpMusicList() {
-        for (int i = 0; i < MusicPlayerController.musicMediaList.size(); i++) {
-            Media hit = MusicPlayerController.musicMediaList.get(i);
+        for (int i = 0; i < MusicPlayerController.musicList.size(); i++) {
+            Media hit = new Media(MusicPlayerController.musicList.get(i).toURI().toString());
             mediaPlayer = new MediaPlayer(hit); //using media player to determine when media meta data is loaded (refactor it if you can)
             int songIndex = i;
             mediaPlayer.setOnReady(() -> {

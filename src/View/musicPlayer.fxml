@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXDrawer?>
 <?import com.jfoenix.controls.JFXHamburger?>
+<?import com.jfoenix.controls.JFXProgressBar?>
 <?import com.jfoenix.controls.JFXSlider?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
@@ -34,7 +35,12 @@
           <children>
             <AnchorPane style="-fx-background-color: #302F50;">
                <children>
-                  <ImageView fitHeight="40.0" fitWidth="30.0" onMouseClicked="#closeApp" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="8.0">
+                  <ImageView fitHeight="40.0" fitWidth="29.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#closeApp" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="9.0">
+                     <image>
+                        <Image url="@../res/images/minimizeWhite.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="40.0" fitWidth="30.0" onMouseClicked="#closeApp" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="8.0">
                      <image>
                         <Image url="@../res/images/quitWhiteCircle.png" />
                      </image>
@@ -61,7 +67,7 @@
                      <children>
                         <ImageView fx:id="albumImage" disable="true" fitHeight="280.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" visible="false">
                            <image>
-                              <Image url="@../res/images/trackWhite.png" />
+                              <Image url="@../res/images/music.png" />
                            </image>
                         </ImageView>
                         <LineChart fx:id="areaChart" alternativeRowFillVisible="false" animated="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" stylesheets="@Style/style.css" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
@@ -132,7 +138,7 @@
                               <Image url="@../res/images/nextWhite.png" />
                            </image>
                            <HBox.margin>
-                              <Insets right="125.0" />
+                              <Insets right="115.0" />
                            </HBox.margin>
                         </ImageView>
                         <ImageView fx:id="repeatButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#repeatButton" pickOnBounds="true" preserveRatio="true">
@@ -162,5 +168,30 @@
             <DropShadow color="#00000096" height="97.965" offsetX="-10.0" radius="54.89625" width="123.62" />
          </effect>
       </JFXDrawer>
+      <VBox fx:id="progressPanel" alignment="CENTER" spacing="15.0" style="-fx-background-color: rgba(50,50,50,0.8);" visible="false">
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
+         <children>
+            <ImageView disable="true" fitHeight="200.0" fitWidth="258.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../res/images/logoCircle.png" />
+               </image>
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin>
+            </ImageView>
+            <JFXProgressBar>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </JFXProgressBar>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="20.0" prefWidth="223.0" text="Loading your music..." textAlignment="CENTER" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font name="Arial Bold" size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
    </children>
 </StackPane>
