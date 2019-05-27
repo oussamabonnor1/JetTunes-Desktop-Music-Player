@@ -293,27 +293,40 @@ public class MusicPlayerController implements Initializable {
     private void loadingParam() {
         String filePath = String.valueOf(Paths.get(pathTillProject + "/JetTunes/data/Parameters"));
         File paramFile = new File(filePath);
-        if (paramFile == null) {
-            System.out.println("empty");
-            paramFile.mkdirs();
-        }
-        Scanner sc = null;
-        try {
-            sc = new Scanner(paramFile);
-            if (sc.hasNextLine()) {
-                isRandom = Boolean.valueOf(sc.nextLine());
-                musicIndex = Integer.valueOf(sc.nextLine());
-                isMute = Boolean.valueOf(sc.nextLine());
+        if (!paramFile.exists()) {
+            try {
+                new File(pathTillProject + "/JetTunes/data").mkdirs();
+                PrintWriter writer = new PrintWriter(pathTillProject + "/JetTunes/data/Parameters", "UTF-8");
+                isRandom = false;
+                musicIndex = 0;
+                isMute = false;
+                writer.println(false);
+                writer.println(0);
+                writer.println(false);
+                writer.close();
                 randomButton.setImage(getUiImage(isRandom ? "shuffleOnWhite" : "ShuffleOFFGreen"));
                 mute.setImage(getUiImage(isMute ? "volumeOffWhite" : "volumeOnWhite"));
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            hit = new Media(musicList.get(musicIndex).toURI().toString());
-            settingUpMediaPlayer(hit);
-            //setting media player after initializing it (avoiding null pointer exception)
-            mediaPlayer.setMute(isMute);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } else {
+            try {
+                Scanner sc = new Scanner(paramFile);
+                if (sc.hasNextLine()) {
+                    isRandom = Boolean.valueOf(sc.nextLine());
+                    musicIndex = Integer.valueOf(sc.nextLine());
+                    isMute = Boolean.valueOf(sc.nextLine());
+                    randomButton.setImage(getUiImage(isRandom ? "shuffleOnWhite" : "ShuffleOFFGreen"));
+                    mute.setImage(getUiImage(isMute ? "volumeOffWhite" : "volumeOnWhite"));
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
+        hit = new Media(musicList.get(musicIndex).toURI().toString());
+        settingUpMediaPlayer(hit);
+        //setting media player after initializing it (avoiding null pointer exception)
+        mediaPlayer.setMute(isMute);
     }
 
     void deletingMusicList() {
