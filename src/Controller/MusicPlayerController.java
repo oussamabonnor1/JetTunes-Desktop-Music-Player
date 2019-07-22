@@ -457,13 +457,15 @@ public class MusicPlayerController implements Initializable {
         mediaPlayer.setAudioSpectrumListener((timestamp, duration, magnitudes, phases) -> {
             for (int i = 0; i < series1Data.length; i++) {
                 float tempValue = magnitudes[i] - mediaPlayer.getAudioSpectrumThreshold();
+                if (tempValue < 10) tempValue *= 2;
+                if (tempValue < 20) tempValue *= 1.5f;
                 series1Data[(i + 25) % 60].setYValue(tempValue);
             }
         });
 
         areaChart.getData().clear();
         areaChart.getData().add(series1);
-        mediaPlayer.setVolume(volumeSlider.getValue()/100);
+        mediaPlayer.setVolume(volumeSlider.getValue() / 100);
         mediaPlayer.setOnReady(this::playMusic);
 
         mediaPlayer.setOnEndOfMedia(() -> nextSong(null));
