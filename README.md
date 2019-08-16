@@ -14,6 +14,7 @@
 
 <img width="400" src="src/res/screenshots/music visualizer demo GIF.gif"> <img width="400" src="src/res/screenshots/music drawer demo GIF.gif">
 
+### Cool features like auto music loading & songs search: 
 <img width="400" src="src/res/screenshots/loading bar demo.gif"> <img width="400" src="src/res/screenshots/search bar demo GIF.gif">
 
 ## TODO:
